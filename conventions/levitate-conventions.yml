@@ -1,0 +1,185 @@
+generated: '2026-08-25'
+method: searched
+source: >-
+  https://help.levitate.ai/article/735-levitate-public-api and
+  https://help.levitate.ai/article/736-oauth-clients-for-the-public-api, cross-checked against
+  openapi/levitate-public-v1-openapi.json
+api: Levitate Public API
+base_url: https://api.levitate.ai/public/v1
+authentication:
+  style: bearer
+  header: 'Authorization: Bearer YOUR_TOKEN'
+  credentials:
+    - kind: Personal API Key
+      audience: a single Levitate user; scripts and tools acting as that user
+      admin_required: false
+      expiry_options_days: [30, 90, 180, 365]
+      renewable: false
+    - kind: OAuth 2.0 bearer token
+      audience: applications acting on behalf of other Levitate users
+      flow: authorization_code + PKCE (client-secret flows are not supported)
+      admin_required: true (only Admin/Super Admin can create OAuth clients)
+  cross_surface_rule: >-
+    A credential scoped to the Levitate MCP Server cannot call the Public API, and a Zapier
+    account-level key cannot either. Each surface takes its own credential.
+  see: authentication/levitate-authentication.yml
+scopes:
+  model: scope AND user-permission — every request must pass both checks
+  published:
+    - levitate:contacts
+    - levitate:campaigns
+  note: >-
+    levitate:contacts covers contacts, companies, notes and key facts despite the name, and currently
+    spans every published /public/v1 endpoint. levitate:campaigns is declared in the spec and in the
+    OAuth-client UI but no campaign path is published in public-v1 yet.
+  see: scopes/levitate-scopes.yml
+pagination:
+  style: cursor
+  request_params:
+    limit: default 25, maximum 100
+    pageToken: opaque cursor returned by the previous page
+    sort: 'creationDate (default, descending) or name; prefix with - for descending'
+  response_fields:
+    values: the page of rows
+    pageToken: cursor for the next page, null at the end
+    totalCount: total matching rows
+  applies_to:
+    - ListContacts
+    - SearchContacts
+    - ListCompanies
+    - ListNotes
+    - ListContactKeyFacts
+filtering:
+  simple: query-string filters on list endpoints, combined with AND only
+  advanced:
+    endpoint: POST /public/v1/Contacts/search
+    shape: >-
+      a single `filter` node that is either a group ({ op: and | or | not, filters: [...] }) or a
+      condition ({ field, operator, value })
+    limits: at most 5 levels of nesting and 50 conditions; every value is sent as a string
+    fields: name, email, company, companyName, tags, city, stateProvince, postalCode, source, createdAt, updatedAt, lastCommunicationDate, customFields.{name}, visibility, emailSubscribed, textSubscribed, hasEmail, hasPhone
+error_envelope:
+  shape: OperationResult
+  media_type: application/json
+  rfc9457: false
+  fields:
+    success: boolean
+    systemMessage: human-readable message
+    systemCode: numeric code mirroring the HTTP status
+    error: nested ITechnicalError { errorMessage, timestamp, source, errorCode, category }
+    requestId: correlation id present on every OperationResult
+  see: errors/levitate-problem-types.yml
+request_id_tracing:
+  supported: true
+  mechanism: requestId field on the OperationResult response envelope
+  header: not documented
+versioning:
+  style: path
+  current: /public/v1
+  spec_document: https://api.levitate.ai/openapi/public-v1.json
+  spec_info_version: '1.0.0'
+  see: lifecycle/levitate-lifecycle.yml
+partial_update_semantics:
+  method: PATCH
+  rules:
+    - An omitted field is left unchanged.
+    - An explicit null clears a scalar.
+    - A supplied ARRAY REPLACES the whole array — it does not merge. Sending `tags` on a PATCH overwrites the contact's entire tag list; the same applies to email addresses, phone numbers and custom fields.
+    - Unknown or read-only fields are rejected rather than ignored.
+  read_only_contact_fields:
+    - source
+    - company
+    - owner
+    - emailSubscribed
+    - textSubscribed
+    - lastCommunicationDate
+    - keyFacts (managed through their own endpoints)
+metadata_and_expansion:
+  custom_fields: supported, readable and writable on contacts, and filterable as customFields.{name}
+  tags: writable; tag names that do not yet exist are created automatically on write
+  field_expansion: not supported — list rows are lean summaries and carry a `url` to follow for the full profile
+  sparse_fieldsets: not supported
+idempotency:
+  supported: false
+  idempotency_key_header: none
+  detail: >-
+    Levitate publishes no Idempotency-Key header and no request-replay contract. The only idempotency
+    language in the whole spec is on DeleteNote, which the description calls "idempotent-ish": a second
+    delete returns 404 rather than 200. Duplicate-create protection is provided instead by 409 Conflict
+    on a matching primary email (contacts) or a matching name/email domain (companies), which is a
+    uniqueness guarantee rather than a replay guarantee — a retried POST after a network timeout will
+    return 409, not the original 201 body.
+  grade: absent
+rate_limit_signaling:
+  documented: false
+  see: rate-limits/levitate-rate-limits.yml
+reversibility:
+  state: absent
+  grade: none
+  detail: >-
+    Levitate publishes no reversal operation on any write surface in public-v1 — no undo, restore,
+    unarchive, cancel or void endpoint exists, and no recovery window is stated anywhere in the docs or
+    the spec. An agent calling these operations cannot take them back through the API.
+  write_surfaces:
+    - operationId: DeleteCompany
+      action: delete
+      reversal: none
+      window: none
+      evidence: 'Spec description: "Permanently removes a company." Associated contacts are detached, not deleted.'
+    - operationId: DeleteNote
+      action: delete
+      reversal: none documented
+      window: none
+      evidence: >-
+        Spec description says the note is SOFT-deleted ("removing it from all reads immediately"), so a
+        restore path plausibly exists server-side — but no restore operation is published and no
+        retention window is stated, so from an API consumer's position the delete is final.
+    - operationId: DeleteContactKeyFact
+      action: delete
+      reversal: none
+      window: none
+      evidence: 'Spec description: "Removes a key fact from a contact." Integration-owned (readOnly) facts cannot be deleted at all.'
+    - operationId: UpdateContact
+      action: overwrite
+      reversal: none
+      window: none
+      evidence: >-
+        Array fields are replaced wholesale on PATCH, so an overwrite of tags/emails/phones/custom
+        fields destroys the prior values with no server-side prior-version to restore. Read-then-write
+        the full array is the documented mitigation.
+    - operationId: UpdateCompany
+      action: overwrite
+      reversal: none
+      window: none
+    - operationId: ReplaceContactKeyFact
+      action: overwrite
+      reversal: none
+      window: none
+    - operationId: CreateContact
+      action: create
+      reversal: none
+      window: none
+      evidence: There is no DELETE /public/v1/Contacts/{id} operation — a contact created through the API cannot be removed through the API.
+    - operationId: CreateNote
+      action: create
+      reversal: DeleteNote
+      window: none stated
+      evidence: A note can be soft-deleted after creation, but no window or restore is documented.
+    - operationId: CreateCompany
+      action: create
+      reversal: DeleteCompany
+      window: none stated
+    - operationId: AddContactKeyFact
+      action: create
+      reversal: DeleteContactKeyFact
+      window: none stated
+dry_run_mode:
+  supported: false
+  detail: No preview, validate-only or dry-run parameter is published on any operation.
+cross_links:
+  errors: errors/levitate-problem-types.yml
+  lifecycle: lifecycle/levitate-lifecycle.yml
+  authentication: authentication/levitate-authentication.yml
+  scopes: scopes/levitate-scopes.yml
+  rate_limits: rate-limits/levitate-rate-limits.yml
+  data_model: data-model/levitate-data-model.yml

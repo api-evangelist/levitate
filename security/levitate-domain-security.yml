@@ -1,0 +1,40 @@
+generated: '2026-08-25'
+method: probed
+source: live DNS/TLS/HTTP probes of apis.yml + OpenAPI hosts
+hosts:
+- host: www.levitate.ai
+  https: true
+  tls_version: TLSv1.3
+  cert_expires: Nov  8 07:57:47 2026 GMT
+  hsts: true
+  hsts_max_age: 31536000
+- host: help.levitate.ai
+  https: true
+  tls_version: TLSv1.3
+  cert_expires: Sep 30 23:24:50 2026 GMT
+  hsts: true
+  hsts_max_age: 31536000
+- host: api.levitate.ai
+  https: true
+  tls_version: TLSv1.3
+  cert_expires: Oct 13 23:59:59 2026 GMT
+  hsts: null
+domains:
+- domain: levitate.ai
+  dnssec: false
+  caa: []
+  spf: false
+  dmarc: false
+- domain: levitateapp.com
+  dnssec: false
+  caa: []
+  spf: true
+  spf_record: v=spf1 include:_spf.google.com include:helpscoutemail.com include:_spf.sendergen.com ~all
+  dmarc: true
+  dmarc_record: v=DMARC1; p=none;
+  note: Levitate's corporate/sending and security-contact domain (security@levitateapp.com). Added by
+    hand from a direct dig; the probe script only walks hosts named in apis.yml, which all sit on levitate.ai.
+note: "levitate.ai itself publishes no SPF, DMARC, CAA or DNSSEC records (verified by dig 2026-08-25)\
+  \ \u2014 notable for an email-marketing vendor. The sending and corporate domain levitateapp.com does\
+  \ publish SPF and DMARC, but DMARC is at p=none (monitor only, no enforcement). api.levitate.ai serves\
+  \ no HSTS header; www.levitate.ai and help.levitate.ai do, at max-age=31536000."

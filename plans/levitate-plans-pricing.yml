@@ -1,0 +1,93 @@
+generated: '2026-08-25'
+method: searched
+source: https://www.levitate.ai/pricing
+api: Levitate platform
+currency: USD
+pricing_model: sales-led — no price is published for any tier
+plan_count: 6
+public_prices: 0
+note: >-
+  Levitate publishes named plan tiers with feature lists but no prices, no quotas and no billing
+  period. Every platform tier's call to action is "Book a Demo" and every website tier's is "Talk to
+  Sales". API and MCP access are not sold as a metered developer product at all: the Public API is a
+  plan FEATURE ("API integrations", listed from Levitate Preferred upward) and must additionally be
+  switched on per account by a Success Specialist. The MCP server is likewise enabled per account by a
+  Success Specialist. There is no self-serve signup, no free tier and no published overage.
+plans:
+  - name: Levitate Essential
+    family: platform
+    price: null
+    billing_period: null
+    cta: Book a Demo
+    included:
+      - Email, social, texting
+      - Dedicated success specialist
+      - AI assistant
+      - Review generation & management
+      - Meeting booking
+    api_access: not listed
+  - name: Levitate Preferred
+    family: platform
+    price: null
+    billing_period: null
+    cta: Book a Demo
+    included:
+      - Everything in Essential
+      - API integrations
+      - Custom surveys
+      - AI blog creation
+      - Industry blog library
+      - Single sign-on (SSO)
+    api_access: listed ("API integrations")
+  - name: Levitate Prestige
+    family: platform
+    price: null
+    billing_period: null
+    cta: Book a Demo
+    included:
+      - Everything in Preferred
+      - Full custom content calendar
+    api_access: listed (inherited from Preferred)
+  - name: Website Essential
+    family: website
+    price: null
+    billing_period: null
+    cta: Talk to Sales
+    included:
+      - Up to 20 pages
+      - Organic SEO
+      - Lead capture
+      - Google Reviews
+    note: Not available to bundle.
+  - name: Website Preferred
+    family: website
+    price: null
+    billing_period: null
+    cta: Talk to Sales
+    included:
+      - Up to 30 pages
+      - Organic SEO
+      - Lead capture
+      - Google Reviews
+      - Compliance workflow
+      - 'Choice: ADA or Translation'
+  - name: Website Prestige
+    family: website
+    price: null
+    billing_period: null
+    cta: Talk to Sales
+    included:
+      - Up to 100 pages
+      - Advanced SEO
+      - GEO optimization
+      - Full technical stack
+      - Everything in Website Preferred
+add_ons:
+  - name: Google Local Service Ads
+    price: null
+  - name: Meta Ads
+    price: null
+quotas_published:
+  - name: AI Email Campaigns
+    value: monthly allowance per account, amount not published
+    source: https://help.levitate.ai/article/737-august-2026-releases

@@ -1,0 +1,62 @@
+generated: '2026-08-25'
+method: searched
+source: https://help.levitate.ai/category/108-latest-releases
+api: Levitate platform (product-wide release notes; there is no separate API changelog)
+scheme: dated monthly release notes, published as help-center articles
+cadence: monthly, with dated in-month sections since 2026
+current_version: 'August 2026 releases'
+earliest_published: December 2021
+api_specific_changelog: false
+note: >-
+  Levitate publishes no API-only changelog and no version history for the OpenAPI document. Public API
+  and MCP changes appear inside the general monthly product release notes, which is where the July 2026
+  MCP tool expansion was announced.
+entries:
+  - version: August 2026
+    date: '2026-08-21'
+    url: https://help.levitate.ai/article/737-august-2026-releases
+    breaking: false
+    highlights:
+      - AI Email Campaigns — describe a campaign in a prompt, then step through audience, schedule and a per-email review grid. Monthly per-account allowance; web search off by default; enabled on request.
+      - Anonymous donations on donation surveys, with anonymous gifts excluded from search.
+      - Donation merge fields {{last donation amount}} / {{last donation date}} and household/company donation roll-ups.
+      - Automatic Event Check-In tags applied on registrant check-in (and removed on undo); not backfilled.
+      - Team meeting booking inside the Levitate assistant chat.
+      - Email templates card in the Outlook compose plugin.
+      - Bulk delete on opportunity boards.
+  - version: July 2026
+    date: '2026-07-01'
+    url: https://help.levitate.ai/article/721-july-2026-releases
+    breaking: false
+    api_relevant: true
+    highlights:
+      - 'MCP Server — Email Campaign & Template Tools: create, update, schedule and list email campaigns and templates through an AI assistant.'
+      - 'MCP Server — Social Post Tools: compose, schedule and manage social posts.'
+      - 'MCP Server — File Upload Tools: upload files via a two-step pre-signed URL flow.'
+      - Blog post compliance flow — send the compliance PDF to a compliance officer from the scheduling screen.
+      - Custom Surveys gain Linear Scale and NPS question types.
+      - AI Branding Assistant extracts palette, fonts and style from a website URL or brand image.
+      - Universal AI Assistant can set a contact's mailing address.
+      - 'Infrastructure: the contact file-upload page moved to files.levitate.ai — a domain IT teams may need to allowlist.'
+      - Service Job Board added for field-service businesses (off by default).
+      - Shared mailbox send-from now defaults to the user's primary address rather than the shared mailbox.
+  - version: June 2026
+    date: '2026-06-01'
+    url: https://help.levitate.ai/article/696-june-2026-releases
+    breaking: false
+    highlights:
+      - User-group permissions for handwritten cards, social posts and the content library.
+      - "Send a Test from the campaign editor and multi-email scheduler."
+      - Email report stats filterable by tag.
+      - Reschedule and cancel meetings directly from the Meetings board.
+      - Custom surveys organized into sections with conditional visibility.
+  - version: May 2026
+    date: '2026-05-01'
+    url: https://help.levitate.ai/article/689-may-2026-releases
+  - version: April 2026
+    date: '2026-04-01'
+    url: https://help.levitate.ai/article/590-april-2026-releases
+  - version: March 2026
+    date: '2026-03-01'
+    url: https://help.levitate.ai/article/582-march-2026-release
+archive_url: https://help.levitate.ai/category/108-latest-releases

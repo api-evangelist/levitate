@@ -1,0 +1,24 @@
+generated: '2026-08-25'
+method: derived
+source: openapi/levitate-public-v1-openapi.json
+schemes:
+- name: OAuth2
+  source: openapi/levitate-public-v1-openapi.json
+  flows:
+  - flow: authorizationCode
+    authorizationUrl: https://login.levitate.ai/oauth2/authorize
+    tokenUrl: https://login.levitate.ai/oauth2/token
+  description: Levitate OAuth2 Authorization Flow
+scopes:
+- scope: levitate:campaigns
+  description: Access Levitate campaigns and related operations
+  flows:
+  - authorizationCode
+  sources:
+  - openapi/levitate-public-v1-openapi.json
+- scope: levitate:contacts
+  description: Access Levitate contacts and related operations
+  flows:
+  - authorizationCode
+  sources:
+  - openapi/levitate-public-v1-openapi.json

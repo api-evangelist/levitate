@@ -1,0 +1,80 @@
+generated: '2026-08-25'
+method: derived
+source: >-
+  openapi/levitate-public-v1-openapi.json 4xx responses, enriched from the troubleshooting section of
+  https://help.levitate.ai/article/735-levitate-public-api
+api: Levitate Public API
+format: proprietary
+rfc9457: false
+media_type: application/json
+envelope:
+  schema: OperationResult
+  fields:
+    success: boolean — false on every error
+    systemMessage: human-readable description of what went wrong
+    systemCode: numeric code that mirrors the HTTP status
+    error: ITechnicalError { errorMessage, timestamp, source, errorCode, category } — populated for technical faults
+    requestId: correlation identifier to quote when contacting support
+  example_from_docs:
+    context: expired Personal API Key
+    body: |
+      {
+        "success": false,
+        "systemMessage": "This API key expired on 2026-08-11. Generate a new API key to continue.",
+        "systemCode": 401
+      }
+problem_types:
+  - status: 400
+    title: Bad Request
+    operations: [UpdateCompany, ListCompanies, CreateCompany, UpdateContact, ListContacts, CreateContact, SearchContacts, AddContactKeyFact, ReplaceContactKeyFact, DeleteContactKeyFact, ListNotes, CreateNote]
+    causes:
+      - Unknown or read-only field supplied on a create or update — Levitate rejects rather than ignores.
+      - Contact create without at least one email address, or without both a first and last name.
+      - Company email domain that cannot identify a company (free-email provider, malformed host, or company-domain matching disabled on the account).
+      - Search filter naming an unknown field, or an operator not valid for that field.
+      - Search filter tree nested more than 5 levels deep or holding more than 50 conditions.
+      - Key fact supplied with neither a value nor a date.
+    remediation: Correct the payload against the API reference at https://api.levitate.ai/docs/ before retrying; the request had no effect.
+  - status: 401
+    title: Unauthorized
+    operations: all 19
+    causes:
+      - Missing, malformed or revoked bearer token.
+      - Personal API Key past its expiration date — systemMessage names the expiry date.
+      - A credential scoped to the Levitate MCP Server used against the Public API — returns "You must be authenticated to perform this operation."
+      - A Zapier account-level key used against the Public API.
+    remediation: >-
+      Distinguish the two 401 messages: an expired key must be replaced (expiry is final, keys cannot be
+      renewed or extended); a "must be authenticated" 401 means the credential is wrong for this surface.
+  - status: 403
+    title: Forbidden
+    operations: [GetCompanyById, UpdateCompany, DeleteCompany, ListCompanies, CreateCompany, GetContactById, UpdateContact, ListContacts, CreateContact, SearchContacts, ListContactKeyFacts, AddContactKeyFact, GetContactKeyFactById, ReplaceContactKeyFact, DeleteContactKeyFact, CreateNote]
+    causes:
+      - The credential's scope does not cover the resource.
+      - The acting user's own Levitate permissions do not allow the operation — scope and user permission are separate checks and both must pass.
+      - Changing a contact's `visibility` without the permission to do so.
+    remediation: Grant the needed scope on the key or OAuth client, and confirm the acting user holds the equivalent permission in the Levitate app.
+  - status: 404
+    title: Not Found
+    operations: [GetCompanyById, UpdateCompany, DeleteCompany, GetContactById, UpdateContact, ListContactKeyFacts, AddContactKeyFact, GetContactKeyFactById, ReplaceContactKeyFact, DeleteContactKeyFact, GetNoteById, DeleteNote]
+    causes:
+      - The record does not exist on the caller's account.
+      - The record exists but is not visible to the caller — Levitate deliberately does not distinguish "not visible" from "does not exist".
+      - The note has already been soft-deleted (a second DELETE returns 404).
+    remediation: Treat 404 as "not addressable by this caller"; do not infer existence from it.
+  - status: 409
+    title: Conflict
+    operations: [UpdateCompany, CreateCompany, UpdateContact, CreateContact]
+    causes:
+      - Creating a contact whose primary email already exists on an account contact.
+      - Changing a contact's email to one already present on the account.
+      - Creating a company matching an existing one by name or by a supplied email domain — nothing is created.
+      - Changing a company name or email domain to one already used by another company on the account.
+    remediation: >-
+      Read-before-write, or treat 409 as an upsert signal and follow with a PATCH. Note this is the only
+      duplicate protection Levitate offers — there is no Idempotency-Key header, so a retried POST after
+      a timeout returns 409 rather than the original 201 body.
+notes:
+  - No 429 response is declared on any operation and no rate-limit error is documented.
+  - No 5xx responses are declared in the specification.
+  - Every error body carries requestId; quote it when escalating to Levitate Support.

@@ -1,0 +1,71 @@
+generated: '2026-08-25'
+method: searched
+source: >-
+  https://help.levitate.ai/article/735-levitate-public-api,
+  https://help.levitate.ai/category/108-latest-releases, https://status.levitate.ai and
+  openapi/levitate-public-v1-openapi.json
+versioning:
+  scheme: path-segment major version
+  current: v1
+  path_prefix: /public/v1
+  spec_info_version: '1.0.0'
+  spec_url: https://api.levitate.ai/openapi/public-v1.json
+  spec_document_name: public-v1
+  policy_published: false
+  note: >-
+    Levitate publishes no written API versioning policy. The version is expressed only as the /public/v1
+    path segment and the public-v1 spec document name. The docs describe the reference as
+    "always-current", and Levitate states that new functionality "may require additional scopes" —
+    forward-additive language, but with no stated compatibility contract.
+deprecation:
+  policy_published: false
+  sunset_header: not documented
+  deprecation_header: not documented
+  rfc8594: false
+  deprecated_operations: 0
+  note: >-
+    No operation in public-v1 carries `deprecated: true`, and no deprecation, sunset or end-of-life
+    policy is published for the API. The nearest published deprecation-like contract is credential
+    expiry: a Personal API Key expires on a fixed 30/90/180/365-day term chosen at creation, cannot be
+    renewed or extended, and every request with it then fails 401 with the expiry date in the body.
+credential_lifecycle:
+  personal_api_key:
+    expiry_options_days: [30, 90, 180, 365]
+    renewable: false
+    extendable: false
+    revocation: immediate on delete
+    expired_signal: 'HTTP 401 with systemMessage "This API key expired on YYYY-MM-DD. Generate a new API key to continue."'
+    guidance: A long-running integration needs a replacement key in place before the old one lapses.
+  oauth_client:
+    managed_by: account Admin / Super Admin, self-serve in the Levitate app
+    redirect_uris: 1 to 5, https only
+    flow: authorization code + PKCE only; client-secret flows unsupported
+change_log:
+  published: true
+  cadence: monthly (with dated in-month sections since 2026)
+  url: https://help.levitate.ai/category/108-latest-releases
+  earliest_seen: December 2021
+  see: changelog/levitate-changelog.yml
+status_page:
+  published: true
+  url: https://status.levitate.ai
+  platform: Better Stack
+  http_status: 200
+  probed: '2026-08-25'
+sla:
+  published: false
+  note: No public SLA or uptime commitment is published on the status page or the pricing page.
+support:
+  channels:
+    - name: Help Center
+      url: https://help.levitate.ai/
+    - name: Dedicated Success Specialist
+      note: Included on every Levitate plan; also the gate for enabling the Public API and MCP server on an account.
+    - name: Phone
+      value: 888-253-7050
+    - name: Security
+      value: security@levitateapp.com
+feature_gating:
+  public_api: Must be enabled per account by a Success Specialist or Support before keys can be generated.
+  mcp_server: Must be enabled per account by a Success Specialist; once enabled any user may connect.
+  plan_tier: 'API integrations are listed as a Levitate Preferred (and above) plan feature; Levitate Essential does not list them.'

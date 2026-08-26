@@ -1,0 +1,143 @@
+generated: '2026-08-25'
+method: derived
+source: >-
+  openapi/levitate-public-v1-openapi.json (19 operations) bound against the MCP tool inventory
+  published at https://help.levitate.ai/article/589-levitate-mcp-server
+note: >-
+  The live MCP tools/list manifest is OAuth-gated (HTTP 401 with an RFC 9728 challenge), so tool
+  input schemas could not be introspected. Only two tool identifiers are named verbatim in Levitate's
+  docs — contacts_search and companies_search — and those two rows carry high confidence. Every other
+  row binds a documented MCP CAPABILITY to the REST operation that backs the same data by semantics,
+  and is marked medium or low accordingly. No tool name has been invented.
+surfaces:
+  openapi:
+    file: openapi/levitate-public-v1-openapi.json
+    base_url: https://api.levitate.ai/public/v1
+    operations: 19
+    gated: false
+    note: Spec is anonymously fetchable at https://api.levitate.ai/openapi/public-v1.json; calling it requires a key.
+  mcp:
+    url: https://mcp.levitate.ai/mcp
+    gated: true
+    gate: OAuth 2.0 authorization code + PKCE via login.levitate.ai
+  graphql:
+    present: false
+crosswalk:
+  - tool: contacts_search
+    category: contacts
+    rest:
+      - SearchContacts
+      - ListContacts
+    binding: name-and-semantics
+    confidence: high
+    note: >-
+      Tool name verbatim from the docs. The REST equivalent is POST /public/v1/Contacts/search (boolean
+      filter tree) with ListContacts as the query-string-filter variant. Both surface the same
+      ContactSummary rows.
+  - tool: companies_search
+    category: companies
+    rest:
+      - ListCompanies
+    binding: name-and-semantics
+    confidence: high
+    note: >-
+      Tool name verbatim from the docs. REST GET /public/v1/Companies filters on name and tags; the docs
+      say the MCP tool additionally supports AND/OR/EXCLUDE tag logic, which REST does not expose for
+      companies.
+  - tool: contact profile lookup (name not published)
+    category: contacts
+    rest:
+      - GetContactById
+      - ListContactKeyFacts
+    binding: semantics
+    confidence: medium
+    note: MCP returns the full profile including key dates, tags and custom properties, plus a profile deep-link the REST payload also carries as `url`.
+  - tool: contact tagging (name not published)
+    category: contacts
+    rest:
+      - UpdateContact
+    binding: semantics
+    confidence: medium
+    note: >-
+      REST tag writes are whole-array replacement on PATCH; the MCP tool is documented as additive
+      ("cannot remove or clear existing contact data"), so the MCP tool is NOT a thin wrapper over the
+      REST operation.
+  - tool: contact edit — name, job title, email, phone (name not published)
+    category: contacts
+    rest:
+      - UpdateContact
+    binding: semantics
+    confidence: medium
+    note: Same additive-only caveat as tagging.
+  - tool: notes search / filter (name not published)
+    category: notes
+    rest:
+      - ListNotes
+      - GetNoteById
+    binding: semantics
+    confidence: medium
+  - tool: company search by tag logic (name not published)
+    category: companies
+    rest:
+      - GetCompanyById
+    binding: semantics
+    confidence: low
+mcp_only:
+  - tool: action items search/filter
+    reason: No action-item resource exists in the public REST API.
+  - tool: donations search
+    reason: No donations resource in REST; donation data is app/board-only.
+  - tool: campaign lookup by name
+    reason: >-
+      A levitate:campaigns OAuth scope is declared in the OpenAPI securityScheme, but no campaign path
+      is published in public-v1 — the scope is declared ahead of the endpoints.
+  - tool: opportunity boards, stages and deal search
+    reason: No opportunities resource in REST.
+  - tool: insurance policy review
+    reason: No policies resource in REST.
+  - tool: contact timeline
+    reason: No timeline/activity resource in REST.
+  - tool: email draft creation
+    reason: No email resource in REST; requires Microsoft Mail.ReadWrite on the user's connected mailbox.
+  - tool: email campaign create/update/schedule/send/get/list
+    reason: No campaigns endpoints in public-v1 REST (added to MCP July 2026).
+  - tool: email template create/update/list
+    reason: No templates endpoints in REST.
+  - tool: social post create/update/schedule/get/list/delete
+    reason: No social endpoints in REST (added to MCP July 2026).
+  - tool: file upload (two-step pre-signed URL)
+    reason: No file endpoints in REST (added to MCP July 2026).
+  - tool: connected-integration live query (11+ providers)
+    reason: REST has no passthrough to connected systems; the docs state the Public API "never connects out to a CRM, AMS, or other source system".
+rest_only:
+  - operationId: CreateContact
+    reason: MCP docs describe contact creation implicitly ("newly created contacts ... include a direct link") but publish no create tool name.
+  - operationId: CreateCompany
+    reason: No company-create tool documented on the MCP surface.
+  - operationId: UpdateCompany
+    reason: No company-update tool documented.
+  - operationId: DeleteCompany
+    reason: MCP tools are documented as additive; no delete tool is published.
+  - operationId: AddContactKeyFact
+    reason: Key-fact writes are REST-only.
+  - operationId: GetContactKeyFactById
+    reason: Key-fact reads by id are REST-only.
+  - operationId: ReplaceContactKeyFact
+    reason: Key-fact replacement is REST-only.
+  - operationId: DeleteContactKeyFact
+    reason: Key-fact deletion is REST-only.
+  - operationId: CreateNote
+    reason: No note-create tool is published on the MCP surface (note SEARCH is).
+  - operationId: DeleteNote
+    reason: No note-delete tool is published.
+coverage:
+  rest_operations: 19
+  rest_operations_bound: 9
+  rest_only: 10
+  mcp_tools_named_in_docs: 2
+  mcp_capability_areas: 14
+  mcp_only_capability_areas: 12
+  summary: >-
+    Neither surface is a superset. REST is the only place to write key facts, create notes, or manage
+    companies; MCP is the only place to reach action items, donations, campaigns, opportunities,
+    policies, email campaigns, social posts, files and connected-integration data.

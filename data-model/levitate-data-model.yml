@@ -1,0 +1,102 @@
+generated: '2026-08-25'
+method: derived
+source: openapi/levitate-public-v1-openapi.json ($ref graph + id-reference fields)
+api: Levitate Public API
+identifier_style:
+  format: opaque string id on every resource
+  prefixed: false
+  note: Levitate publishes no documented id prefix scheme; ids are opaque strings, not typed prefixes.
+entities:
+  - name: Contact
+    description: The central record. Carries names, job title, website, bio, tags, custom fields, email addresses, phone numbers, a mailing address, subscription state and key facts.
+    operations: [GetContactById, ListContacts, SearchContacts, CreateContact, UpdateContact]
+    read_only_fields: [source, company, owner, emailSubscribed, textSubscribed, lastCommunicationDate, keyFacts]
+    summary_projection: ContactSummary
+  - name: Company
+    description: An organization record with name, description, email domains, website, logo, phone numbers, address, tags and a key-facts collection.
+    operations: [GetCompanyById, ListCompanies, CreateCompany, UpdateCompany, DeleteCompany]
+    summary_projection: CompanySummary
+  - name: KeyFact
+    description: A dated or valued personal detail on a contact (birthday, anniversary, hobby) that drives Levitate's timely outreach. Max 100 per contact. Facts sourced from an official Levitate integration are readOnly and cannot be modified or deleted through the API.
+    operations: [ListContactKeyFacts, AddContactKeyFact, GetContactKeyFactById, ReplaceContactKeyFact, DeleteContactKeyFact]
+  - name: Note
+    description: An activity record whose body is a sanitized HTML fragment wrapped in <lev-content>, attached to one or more contacts and/or companies. Soft-deleted on DELETE.
+    operations: [GetNoteById, ListNotes, CreateNote, DeleteNote]
+    summary_projection: NoteSummary
+value_objects:
+  - EmailAddress { label, value }
+  - PhoneNumber { label, value, metadata, canSMS }
+  - Address { address1, address2, city, stateProvince, postalCode, country }
+  - KeyDate { month, day, year }
+  - Reference { name, id }
+  - NoteReference { type, name, url, id }
+relationships:
+  - from: Contact
+    to: Company
+    kind: belongs_to
+    via: company (Reference)
+    note: Read-only — the company is INFERRED from the primary email's domain and cannot be set through the API.
+  - from: Contact
+    to: KeyFact
+    kind: has_many
+    via: keyFacts (read-only on the profile; written through /Contacts/{id}/keyfacts)
+    max: 100
+  - from: Contact
+    to: EmailAddress
+    kind: has_many
+    via: emailAddresses (first entry is primary)
+  - from: Contact
+    to: PhoneNumber
+    kind: has_many
+    via: phoneNumbers (first entry is primary)
+  - from: Contact
+    to: Address
+    kind: has_one
+    via: address
+  - from: Contact
+    to: User
+    kind: belongs_to
+    via: owner (Reference, read-only)
+  - from: Company
+    to: KeyFact
+    kind: has_many
+    via: keyFactsCollection
+  - from: Company
+    to: PhoneNumber
+    kind: has_many
+    via: phoneNumbers
+  - from: Company
+    to: Address
+    kind: has_one
+    via: address
+  - from: Note
+    to: Contact
+    kind: has_many
+    via: references[] where type = contact
+    max: 25 contacts or companies per note
+  - from: Note
+    to: Company
+    kind: has_many
+    via: references[] where type = company
+  - from: Note
+    to: User
+    kind: belongs_to
+    via: createdBy (Reference)
+envelopes:
+  operation_result: OperationResult{ success, systemMessage, systemCode, error, requestId } wrapping every response
+  paged_collection: PagedCollectionOf<T>{ values[], pageToken, totalCount }
+  typed_wrappers:
+    - OperationResultOfContact
+    - OperationResultOfCompany
+    - OperationResultOfNote
+    - OperationResultOfKeyFact
+    - OperationResultOfPagedCollectionOfContactSummary
+    - OperationResultOfPagedCollectionOfCompanySummary
+    - OperationResultOfPagedCollectionOfNoteSummary
+    - OperationResultOfPagedCollectionOfKeyFact
+absent_from_rest:
+  note: >-
+    These entities are reachable through the MCP server but have no public REST representation — see
+    mcp/levitate-tool-crosswalk.yml.
+  entities: [ActionItem, Donation, Campaign, Opportunity, InsurancePolicy, EmailTemplate, SocialPost, File, ContactTimeline]
+schema_count: 40

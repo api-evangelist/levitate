@@ -1,0 +1,44 @@
+generated: '2026-08-25'
+method: searched
+source: >-
+  registry.npmjs.org search, pypi.org, plus https://help.levitate.ai/article/735-levitate-public-api
+  and https://api.levitate.ai/docs/
+package_count: 0
+official_sdk_count: 0
+packages: []
+note: >-
+  Levitate ships NO first-party client library on any registry. npm search for "levitate" returns only
+  unrelated projects (@grafana/levitate, an exploit-development platform, a discord.js module);
+  pypi.org/pypi/levitate is an unrelated acoustic-levitation research package (levitate-api and
+  levitate-ai both 404). Levitate's own docs are explicit that the Public API "is not a plug-and-play
+  solution. There is no pre-built connector to install" and that using it "means writing and
+  maintaining your own code", which is consistent with the absence. Checked 2026-08-25.
+registries_checked:
+  - registry: npm
+    query: levitate
+    first_party_hits: 0
+  - registry: pypi
+    packages_probed: [levitate, levitate-api, levitate-ai]
+    first_party_hits: 0
+    detail: 'levitate = 200 but is an unrelated acoustics package; levitate-api = 404; levitate-ai = 404'
+  - registry: rubygems
+    first_party_hits: 0
+  - registry: packagist
+    first_party_hits: 0
+  - registry: nuget
+    first_party_hits: 0
+    detail: >-
+      Worth a re-check on a later pass — the API is built on ASP.NET (the docs page is Scalar's dotnet
+      integration), so a .NET client would be the most likely first-party SDK if one ever ships.
+non_sdk_distribution:
+  - name: Zapier app
+    kind: no-code connector
+    url: https://help.levitate.ai/article/321-zapier
+    note: Account-level Zapier API key; explicitly NOT usable against the Public API.
+  - name: Levitate MCP server
+    kind: hosted remote MCP endpoint
+    url: https://mcp.levitate.ai/mcp
+    note: No package to install — it is a URL an MCP client connects to. See mcp/levitate-mcp.yml.
+  - name: Outlook / Gmail plugins and mobile app
+    kind: end-user client
+    url: https://help.levitate.ai/category/11-levitate-for-outlook-gmail-and-mobile-app

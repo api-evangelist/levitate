@@ -1,0 +1,19 @@
+generated: '2026-08-25'
+method: derived
+source: openapi/levitate-public-v1-openapi.json
+summary:
+  types:
+  - oauth2
+  oauth2_flows:
+  - authorizationCode
+schemes:
+- name: OAuth2
+  type: oauth2
+  flows:
+  - flow: authorizationCode
+    authorizationUrl: https://login.levitate.ai/oauth2/authorize
+    tokenUrl: https://login.levitate.ai/oauth2/token
+    scopes: 2
+  description: Levitate OAuth2 Authorization Flow
+  sources:
+  - openapi/levitate-public-v1-openapi.json

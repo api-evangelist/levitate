@@ -1,23 +1,202 @@
 aid: levitate
 name: Levitate
-description: 'Levitate is a company surfaced via the API Evangelist harvest backlog (source: secondary-market)
-  and added to the network as a stub for full-pipeline profiling.'
+description: >-
+  Levitate is a relationship-marketing and "Happiness Platform" SaaS for relationship-based small
+  businesses — insurance agencies, financial advisors, law firms, nonprofits, home services and
+  faith organizations — founded in 2017 in Raleigh, North Carolina by ShareFile founder Jesse Lipson.
+  The product combines AI-assisted personal email at scale, text messaging, social posting, surveys
+  and event registration, review generation, meeting booking, handwritten cards, donation and
+  opportunity boards, and website publishing, all built around a contact record that stores "key
+  facts" (birthdays, anniversaries, hobbies) used to drive timely, personalized outreach. Levitate
+  exposes two developer surfaces: a REST Public API (OpenAPI 3.1.1) over Contacts, Key Facts,
+  Companies and Notes at api.levitate.ai/public/v1, authenticated with Personal API Keys or OAuth 2.0
+  authorization-code + PKCE bearer tokens; and a hosted, OAuth-protected remote MCP server at
+  mcp.levitate.ai/mcp that gives AI assistants natural-language access to contacts, action items,
+  donations, campaigns, opportunities, policies, notes and connected-integration data.
 url: https://raw.githubusercontent.com/api-evangelist/levitate/refs/heads/main/apis.yml
+image: https://cdn.prod.website-files.com/645165b093e7c8d734211d5d/64ac9c0f52d7bf5e396e6261_og%20image.png
 x-type: company
 x-source: harvest:secondary-market
-x-tier: stub
-x-tier-reason: harvest
-specificationVersion: '0.20'
+specificationVersion: '0.23'
 created: '2026-08-25'
 modified: '2026-08-25'
 tags:
-- Company
-apis: []
-maintainers:
-- FN: Kin Lane
-  email: kin@apievangelist.com
-- FN: APIs.json
-  email: info@apis.io
+  - Relationship Marketing
+  - CRM
+  - Email Marketing
+  - Contacts
+  - Small Business
+  - Insurance
+  - Financial Services
+  - Nonprofit
+  - Marketing Automation
+  - MCP
+  - agent-native
+  - SaaS
+tags_raw:
+  - relationship-marketing
+  - crm
+  - email-marketing
+  - contacts
+  - small-business
+  - insurance
+  - financial-services
+  - nonprofit
+  - marketing-automation
+  - mcp
+  - agent-native
+  - saas
+apis:
+  - name: Levitate Public API
+    description: >-
+      REST API (OpenAPI 3.1.1, 19 operations) for reading and writing Levitate contacts, contact key
+      facts, companies and notes. Cursor-paged list endpoints plus a nested boolean (AND/OR/NOT)
+      contact search. Authenticated with a Personal API Key or an OAuth 2.0 authorization-code +
+      PKCE bearer token under the levitate:contacts scope. The Public API feature must be enabled on
+      an account by Levitate Support before keys can be generated.
+    humanURL: https://help.levitate.ai/article/735-levitate-public-api
+    baseURL: https://api.levitate.ai/public/v1
+    tags:
+      - CRM
+      - Contacts
+      - Relationship Marketing
+      - Small Business
+    tags_raw:
+      - crm
+      - contacts
+      - relationship-marketing
+      - small-business
+    properties:
+      - type: OpenAPI
+        url: openapi/levitate-public-v1-openapi.json
+      - type: Documentation
+        url: https://help.levitate.ai/article/735-levitate-public-api
+      - type: APIReference
+        url: https://api.levitate.ai/docs/
+      - type: Authentication
+        url: authentication/levitate-authentication.yml
+      - type: OAuthScopes
+        url: scopes/levitate-scopes.yml
+      - type: Conventions
+        url: conventions/levitate-conventions.yml
+      - type: ErrorCatalog
+        url: errors/levitate-problem-types.yml
+      - type: DataModel
+        url: data-model/levitate-data-model.yml
+      - type: Overlay
+        url: overlays/levitate-public-v1-overlay.yaml
+  - name: Levitate MCP Server
+    description: >-
+      Hosted remote MCP server (streamable HTTP) that connects Levitate to AI assistants — Claude
+      Desktop, Claude Code, ChatGPT, Cursor, VS Code Copilot, Windsurf and any MCP-compatible HTTP
+      client. Tools cover contact search and profile lookup, contact tagging and edits, company
+      search, action items, notes, contact timeline, donations and campaigns, opportunity pipelines,
+      insurance policies, email drafts, email campaign and template management, social posts, file
+      upload, and live queries across 11+ connected integrations. Authentication is OAuth 2.0 with
+      PKCE against login.levitate.ai; no API keys. The feature is enabled per account by a Levitate
+      Success Specialist.
+    humanURL: https://help.levitate.ai/article/589-levitate-mcp-server
+    baseURL: https://mcp.levitate.ai/mcp
+    tags:
+      - MCP
+      - agent-native
+      - CRM
+      - Contacts
+    tags_raw:
+      - mcp
+      - agent-native
+      - crm
+      - contacts
+    properties:
+      - type: MCPServer
+        url: mcp/levitate-mcp.yml
+      - type: MCPServer
+        url: https://mcp.levitate.ai/mcp
+      - type: ToolCrosswalk
+        url: mcp/levitate-tool-crosswalk.yml
+      - type: Documentation
+        url: https://help.levitate.ai/article/589-levitate-mcp-server
 common:
-- type: Website
-  url: https://forgeglobal.com/levitate_stock/
+  - type: VulnerabilityDisclosure
+    url: security/levitate-vulnerability-disclosure.yml
+  - type: DomainSecurity
+    url: security/levitate-domain-security.yml
+  - type: Website
+    url: https://www.levitate.ai/
+  - type: Documentation
+    url: https://help.levitate.ai/article/735-levitate-public-api
+  - type: APIReference
+    url: https://api.levitate.ai/docs/
+  - type: GettingStarted
+    url: https://help.levitate.ai/article/322-api-keys
+  - type: Support
+    url: https://help.levitate.ai/
+  - type: HelpCenter
+    url: https://help.levitate.ai/
+  - type: Blog
+    url: https://www.levitate.ai/blog
+  - type: Pricing
+    url: https://www.levitate.ai/pricing
+  - type: Login
+    url: https://login.levitate.ai/
+  - type: TermsOfService
+    url: https://www.levitate.ai/terms-of-service
+  - type: PrivacyPolicy
+    url: https://www.levitate.ai/privacy-policy
+  - type: StatusPage
+    url: https://status.levitate.ai
+  - type: ChangeLog
+    url: https://help.levitate.ai/category/108-latest-releases
+  - type: TrustCenter
+    url: https://trust.levitate.ai
+  - type: Compliance
+    url: conformance/levitate-conformance.yml
+  - type: Conformance
+    url: conformance/levitate-conformance.yml
+  - type: MCPServer
+    url: mcp/levitate-mcp.yml
+  - type: Authentication
+    url: authentication/levitate-authentication.yml
+  - type: OAuthScopes
+    url: scopes/levitate-scopes.yml
+  - type: Conventions
+    url: conventions/levitate-conventions.yml
+  - type: ErrorCatalog
+    url: errors/levitate-problem-types.yml
+  - type: Lifecycle
+    url: lifecycle/levitate-lifecycle.yml
+  - type: ChangeLog
+    url: changelog/levitate-changelog.yml
+  - type: RateLimits
+    url: rate-limits/levitate-rate-limits.yml
+  - type: Plans
+    url: plans/levitate-plans-pricing.yml
+  - type: Packages
+    url: packages/levitate-packages.yml
+  - type: WellKnown
+    url: well-known/levitate-well-known.yml
+  - type: DataModel
+    url: data-model/levitate-data-model.yml
+  - type: LLMsTxt
+    url: llms/levitate-llms.txt
+  - type: AgentSkill
+    url: skills/_index.yml
+  - type: Security
+    url: security/levitate-vulnerability-disclosure.yml
+  - type: Overlay
+    url: overlays/levitate-public-v1-overlay.yaml
+  - type: ToolCrosswalk
+    url: mcp/levitate-tool-crosswalk.yml
+maintainers:
+  - FN: Kin Lane
+    email: kin@apievangelist.com
+  - FN: APIs.json
+    email: info@apis.io
+x-secondary-market:
+  - venue: Forge Global
+    url: https://forgeglobal.com/levitate_stock/
+x-enrichment:
+  date: '2026-08-25'
+  status: enriched
+  artifacts_added: 33
+  pass: local-v1

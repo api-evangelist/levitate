@@ -1,0 +1,42 @@
+generated: '2026-08-25'
+method: searched
+source: >-
+  https://help.levitate.ai/article/735-levitate-public-api and
+  openapi/levitate-public-v1-openapi.json
+api: Levitate Public API
+limit_count: 0
+headers_published: []
+status_on_exhaustion: null
+retry_after: not documented
+note: >-
+  Levitate publishes NO rate limits for the Public API. The help-center API article covers
+  authentication, scopes, use cases, best practices, troubleshooting and FAQs without mentioning a
+  limit, quota, throttle or 429. The OpenAPI document declares no 429 response and no RateLimit-*,
+  X-RateLimit-* or Retry-After header on any of the 19 operations. An agent therefore has no runtime
+  signal to back off on, and no documented number to plan against. Recorded as an honest zero rather
+  than an omission.
+paging_constraints:
+  note: >-
+    The nearest published throughput constraint is the page size, which is a paging limit rather than a
+    rate limit.
+  default_page_size: 25
+  max_page_size: 100
+  applies_to: [ListContacts, SearchContacts, ListCompanies, ListNotes, ListContactKeyFacts]
+other_published_ceilings:
+  - subject: contact key facts
+    limit: 100 per contact
+    source: openapi AddContactKeyFact description
+  - subject: note references
+    limit: 25 contacts or companies per note
+    source: https://help.levitate.ai/article/735-levitate-public-api
+  - subject: contact search filter tree
+    limit: max 5 levels of nesting, max 50 conditions
+    source: openapi SearchContacts description
+  - subject: OAuth client redirect URIs
+    limit: 1 minimum, 5 maximum
+    source: https://help.levitate.ai/article/736-oauth-clients-for-the-public-api
+  - subject: daily email send limits
+    note: >-
+      Levitate documents per-account daily SENDING limits for the product at
+      https://help.levitate.ai/article/304-daily-send-limits-send-limitations — these are product send
+      limits, not API request limits, and are not stated as numbers on the public page.

@@ -1,0 +1,102 @@
+generated: '2026-08-25'
+method: searched
+source: https://help.levitate.ai/article/589-levitate-mcp-server
+name: Levitate MCP Server
+status: published
+deployment:
+  mode: remote
+  endpoint: https://mcp.levitate.ai/mcp
+  auth: oauth
+  verified: probed
+transport: streamable-http
+probe:
+  url: https://mcp.levitate.ai/mcp
+  method: POST tools/list (JSON-RPC 2.0)
+  http_status: 401
+  www_authenticate: Bearer resource_metadata="https://mcp.levitate.ai/.well-known/oauth-protected-resource/mcp"
+  result: >-
+    The live tools/list manifest is OAuth-gated, so tool input schemas could not be introspected
+    anonymously. The tool inventory below is taken from Levitate's own published MCP documentation —
+    names are verbatim only where the docs name them; the rest are recorded as capability
+    descriptions, not invented tool identifiers.
+  probed: '2026-08-25'
+authorization:
+  scheme: OAuth 2.0 authorization code + PKCE
+  authorization_server: https://login.levitate.ai
+  authorization_endpoint: https://login.levitate.ai/oauth2/authorize
+  token_endpoint: https://login.levitate.ai/oauth2/token
+  dynamic_client_registration: https://login.levitate.ai/oauth2/register
+  protected_resource_metadata: https://mcp.levitate.ai/.well-known/oauth-protected-resource/mcp
+  scopes_advertised:
+    - openid
+    - profile
+    - email
+  api_keys_supported: false
+  note: >-
+    Any Levitate user may connect; no admin setup is required, but the MCP feature must be enabled on
+    the account by a Levitate Success Specialist first. A credential scoped to the MCP server cannot
+    be used against the REST Public API and vice versa.
+clients_documented:
+  - name: Claude Desktop
+    method: Connectors directory (verified app)
+  - name: Claude Code
+    method: 'claude mcp add --transport http levitate https://mcp.levitate.ai/mcp'
+  - name: ChatGPT
+    method: Plugins directory (verified app)
+  - name: Cursor
+    method: Settings > MCP > Add new MCP server, type URL
+  - name: VS Code (Copilot)
+    method: '.vscode/mcp.json  {"servers":{"levitate":{"type":"http","url":"https://mcp.levitate.ai/mcp"}}}'
+  - name: Windsurf
+    method: Settings > MCP > Add Server, transport HTTP
+  - name: Any MCP-compatible HTTP client
+    method: 'Transport: HTTP, URL https://mcp.levitate.ai/mcp'
+tools_named_in_docs:
+  - name: contacts_search
+    category: contacts
+    description: >-
+      Search contacts by name, company, location, tags, last communication date and contact creation
+      date; matches the full capability of the in-app AI assistant.
+  - name: companies_search
+    category: companies
+    description: >-
+      Search companies by name, tags or other attributes, with the same AND / OR / EXCLUDE tag logic
+      available in the Levitate web app.
+capabilities_documented:
+  - area: contacts
+    description: Full contact profile lookup including key dates, tags, custom properties and communication history; results carry a direct link to the contact profile in Levitate.
+  - area: contacts
+    description: Add tags to contacts individually or in bulk.
+  - area: contacts
+    description: Update contact name, job title, email address and phone number. Additive only — these tools cannot remove or clear existing contact data.
+  - area: contacts
+    description: Contact timeline — emails sent, notes recorded, calls logged and key dates.
+  - area: notes
+    description: Search and filter notes across the whole team or by rep, contact or date range.
+  - area: action-items
+    description: Search and filter action items by assignee, due date or completion status.
+  - area: donations
+    description: Search donations by amount, date, campaign or tags; look up campaigns by name.
+  - area: opportunities
+    description: Browse opportunity boards and stages; search deals by owner, close date, deal size or tags.
+  - area: policies
+    description: Review insurance policy information tied to contacts and accounts.
+  - area: email
+    description: Draft an email to a contact as a reviewable draft in Levitate — nothing sends until the user approves. O365/Outlook users must reconnect Microsoft to grant Mail.ReadWrite.
+  - area: email-campaigns
+    description: Create, update, schedule/send, get and list email campaigns; create, update and list email templates. Shipped July 2026.
+  - area: social
+    description: Create, update, schedule, get, list and delete social posts. Shipped July 2026.
+  - area: files
+    description: Upload files to Levitate via a two-step pre-signed URL flow. Shipped July 2026.
+  - area: integrations
+    description: Query live data from connected integrations across 11+ supported providers (CRM, calendar, HousecallPro and others). HousecallPro results are live rather than a daily snapshot.
+divergence_from_rest:
+  note: >-
+    The MCP surface is materially WIDER than the REST Public API. REST covers Contacts, Key Facts,
+    Companies and Notes only (19 operations). MCP additionally reaches action items, donations,
+    campaigns, opportunities, insurance policies, email campaigns and templates, social posts, file
+    upload and live connected-integration data — none of which have a public REST endpoint. See
+    mcp/levitate-tool-crosswalk.yml.
+provider_guidance:
+  - "Do not connect the MCP server from a free tier of any AI assistant — Levitate accounts may hold sensitive client information."

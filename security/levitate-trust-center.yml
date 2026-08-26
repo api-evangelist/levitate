@@ -1,0 +1,38 @@
+generated: '2026-08-25'
+method: searched
+source: https://trust.levitate.ai
+name: Levitate Trust Center
+url: https://trust.levitate.ai
+http_status: 200
+platform: Vanta
+probed: '2026-08-25'
+legal_entity: Real Magic (the Levitate footer and vulnerability program both name Real Magic as the entity)
+certifications:
+  - name: SOC 2 Type I
+    status: achieved
+    auditor: Prescient Assurance
+    source: https://www.levitate.ai/blog-posts/levitate-secures-soc-2-type-i-and-ii-certification
+  - name: SOC 2 Type II
+    status: achieved
+    auditor: Prescient Assurance
+    source: https://www.levitate.ai/blog-posts/levitate-secures-soc-2-type-i-and-ii-certification
+documents:
+  - name: Annual SOC 2 Report
+    access: approved access + MNDA
+  - name: Disaster Recovery Plan
+    access: approved access + MNDA
+security_practices_published:
+  - Email access via OAuth rather than stored mailbox credentials
+  - Unique per-user encryption keys managed by AWS KMS
+  - AWS KMS FIPS 140-2 validated hardware security modules
+contacts:
+  vendor_due_diligence: security@levitateapp.com
+  vulnerability_reports: security@levitateapp.com
+related:
+  compliance_resources: https://help.levitate.ai/article/588-compliance-due-dilligence-resources
+  vulnerability_disclosure: https://www.levitate.ai/vulnerability-disclosure
+  ai_privacy_faq: https://help.levitate.ai/article/726-ai-features-data-privacy-faq
+note: >-
+  The trust center is a Vanta-hosted single-page app; the live control list renders client-side and was
+  not machine-readable at fetch time. The certifications recorded here are corroborated from Levitate's
+  own press release and help-center compliance article rather than scraped from the SPA shell.

@@ -1,0 +1,94 @@
+overlay: 1.0.0
+info:
+  title: API Evangelist enhancements for the Levitate Public API
+  version: 1.0.0
+extends: openapi/levitate-public-v1-openapi.json
+x-provenance:
+  generated: '2026-08-25'
+  method: generated
+  source: >-
+    Derived from openapi/levitate-public-v1-openapi.json plus facts published at
+    https://help.levitate.ai/article/735-levitate-public-api and
+    https://help.levitate.ai/article/736-oauth-clients-for-the-public-api. The original specification is
+    never mutated; every statement below is traceable to Levitate's own documentation.
+actions:
+  - target: $.info
+    description: Add contact, licence-neutral description and terms pointers absent from the published spec.
+    update:
+      description: >-
+        The Levitate Public API reads and writes Levitate contacts, contact key facts, companies and
+        notes. All endpoints live under https://api.levitate.ai/public/v1 and take a bearer credential:
+        either a Personal API Key (tied to one user, fixed 30/90/180/365-day expiry, not renewable) or
+        an OAuth 2.0 authorization-code + PKCE token issued by https://login.levitate.ai. The Public API
+        feature must be enabled on an account by Levitate Support before keys can be generated. The API
+        is not a connector and does not sync — it never reaches out to a CRM or AMS on its own.
+      contact:
+        name: Levitate Support
+        url: https://help.levitate.ai/
+      termsOfService: https://www.levitate.ai/terms-of-service
+  - target: $.servers
+    description: Pin the documented base path rather than the bare host, so generated clients hit /public/v1.
+    update:
+      - url: https://api.levitate.ai
+        description: Production. All Public API paths are prefixed /public/v1.
+  - target: $.security
+    description: >-
+      The published spec declares an OAuth2 securityScheme but applies no top-level security requirement
+      and sets `security: null` on every operation, so a generated client would emit unauthenticated
+      calls. Every operation in fact requires a bearer credential with the levitate:contacts scope.
+    update:
+      - OAuth2:
+          - levitate:contacts
+  - target: $.components.securitySchemes
+    description: >-
+      Record the Personal API Key credential, which the docs describe as the primary path for scripts
+      but which the specification omits entirely. Both credentials travel in the same Authorization
+      bearer header.
+    update:
+      PersonalApiKey:
+        type: http
+        scheme: bearer
+        description: >-
+          Personal API Key generated in the Levitate app under Integrations. Tied to one user, requires
+          at least one scope, expires after a chosen 30/90/180/365 days and cannot be renewed or
+          extended. A key scoped to the Levitate MCP Server or a Zapier account key will NOT
+          authenticate against the Public API.
+  - target: $.tags
+    description: Add descriptions to the three declared tags, which the published spec leaves bare.
+    update:
+      - name: Contacts
+        description: The central Levitate record — names, emails, phones, address, tags, custom fields and key facts, plus a boolean search endpoint.
+      - name: Companies
+        description: Organization records. A contact's company is inferred from its primary email domain and cannot be set directly.
+      - name: Notes
+        description: Activity records with a sanitized HTML body, attached to up to 25 contacts and/or companies.
+  - target: $.paths['/public/v1/Contacts'].post
+    description: Flag the non-idempotent create so agent tooling does not blind-retry it.
+    update:
+      x-agentic-access:
+        action-class: write
+        consequence: creates a durable customer record
+        reversible: false
+        note: >-
+          There is no DELETE operation for a contact in public-v1, so a contact created through the API
+          cannot be removed through the API. There is no Idempotency-Key header — a retry after a
+          timeout returns 409 Conflict rather than the original 201 body.
+  - target: $.paths['/public/v1/Companies/{id}'].delete
+    description: Flag the irreversible delete.
+    update:
+      x-agentic-access:
+        action-class: delete
+        consequence: permanently removes a company record
+        reversible: false
+        note: Levitate's own description says "Permanently removes a company." No restore operation and no recovery window are published.
+  - target: $.paths['/public/v1/Contacts/{id}'].patch
+    description: Warn that array fields are replaced, not merged — the most destructive quiet behaviour in this API.
+    update:
+      x-agentic-access:
+        action-class: update
+        consequence: overwrites array fields wholesale
+        reversible: false
+        note: >-
+          A supplied array REPLACES the whole array. Sending `tags` overwrites the contact's entire tag
+          list; the same applies to emailAddresses, phoneNumbers and customFields. Read the current
+          array, append, and send the full list back.

@@ -1,0 +1,111 @@
+generated: '2026-08-25'
+method: searched
+source: >-
+  openapi/levitate-public-v1-openapi.json, the live /.well-known OAuth documents saved under
+  well-known/, https://help.levitate.ai/article/736-oauth-clients-for-the-public-api,
+  https://help.levitate.ai/article/588-compliance-due-dilligence-resources, https://trust.levitate.ai
+  and https://www.levitate.ai/blog-posts/levitate-secures-soc-2-type-i-and-ii-certification
+standards:
+  - id: openapi
+    conforms: true
+    version: 3.1.1
+    evidence: openapi/levitate-public-v1-openapi.json, served at https://api.levitate.ai/openapi/public-v1.json (HTTP 200)
+  - id: oauth2
+    conforms: true
+    evidence: >-
+      components.securitySchemes.OAuth2 declares an authorizationCode flow against
+      https://login.levitate.ai/oauth2/authorize and /oauth2/token with two scopes; the docs state
+      PKCE-only clients are supported and client-secret flows are not.
+  - id: oauth2-pkce
+    conforms: true
+    evidence: >-
+      well-known/levitate-login-oauth-authorization-server.json advertises
+      code_challenge_methods_supported ["S256"]; help article 736 states "Levitate supports PKCE-only
+      OAuth clients."
+  - id: rfc8414
+    name: OAuth 2.0 Authorization Server Metadata
+    conforms: true
+    evidence: 200 at /.well-known/oauth-authorization-server on api.levitate.ai, mcp.levitate.ai and login.levitate.ai
+  - id: rfc9728
+    name: OAuth 2.0 Protected Resource Metadata
+    conforms: true
+    evidence: >-
+      200 at /.well-known/oauth-protected-resource and /.well-known/oauth-protected-resource/mcp on
+      api.levitate.ai and mcp.levitate.ai, and the 401 from mcp.levitate.ai/mcp returns
+      WWW-Authenticate: Bearer resource_metadata="..." pointing at it.
+  - id: rfc7591
+    name: OAuth 2.0 Dynamic Client Registration
+    conforms: true
+    evidence: well-known/levitate-login-oauth-authorization-server.json advertises registration_endpoint https://login.levitate.ai/oauth2/register
+  - id: oidc
+    name: OpenID Connect Discovery
+    conforms: true
+    evidence: >-
+      well-known/levitate-login-openid-configuration.json — issuer, userinfo_endpoint, jwks_uri,
+      introspection_endpoint, RS256 id tokens, device authorization grant.
+  - id: mcp
+    name: Model Context Protocol
+    conforms: true
+    transport: streamable HTTP
+    evidence: >-
+      https://mcp.levitate.ai/mcp answers a JSON-RPC tools/list POST with 401 + RFC 9728 challenge
+      (probed 2026-08-25); Levitate documents it as a remote HTTP MCP server and is a verified app in
+      the Claude Desktop connector directory and ChatGPT plugin directory.
+  - id: pagination
+    conforms: true
+    style: cursor (pageToken), default 25 / max 100
+    evidence: limit, pageToken and sort parameters on every list endpoint; PagedCollectionOf<T> response schema.
+  - id: rfc9457
+    name: Problem Details for HTTP APIs
+    conforms: false
+    evidence: >-
+      Errors use a proprietary OperationResult envelope with application/json, not
+      application/problem+json. See errors/levitate-problem-types.yml.
+  - id: idempotency
+    conforms: false
+    evidence: No Idempotency-Key header or replay contract is published; 409 Conflict provides uniqueness, not idempotency.
+  - id: asyncapi
+    conforms: false
+    evidence: No event, streaming or webhook surface is published for the Public API.
+  - id: json-schema
+    conforms: true
+    version: 2020-12 (via OpenAPI 3.1)
+    evidence: 40 component schemas expressed in OpenAPI 3.1 JSON Schema dialect.
+domain_standard:
+  assessed: true
+  found: false
+  note: >-
+    Levitate's markets (SMB relationship marketing, insurance agency, financial advisory, nonprofit
+    fundraising) do have candidate interchange standards — ACORD for P&C insurance, FDX for financial
+    data, and CRM-side conventions — but the public-v1 contract declares NONE of them: no ACORD message
+    type, no SCIM URN, no OData $metadata, no OAI-PMH verb, no HL7/X12/ISO-20022 shape. The insurance
+    and donation data that would carry such a signature lives on the MCP surface, which is auth-gated,
+    so this is recorded as "no domain standard declared in the published contract" rather than a
+    negative finding about the company. Reward-only check: nothing is deducted.
+compliance:
+  certifications:
+    - name: SOC 2 Type I
+      status: achieved
+      auditor: Prescient Assurance
+      evidence: https://www.levitate.ai/blog-posts/levitate-secures-soc-2-type-i-and-ii-certification
+    - name: SOC 2 Type II
+      status: achieved
+      auditor: Prescient Assurance
+      report_access: Annual SOC 2 Report available through the Trust Center under an MNDA
+      evidence: https://help.levitate.ai/article/588-compliance-due-dilligence-resources
+  documents_gated_behind_mnda:
+    - Annual SOC 2 Report
+    - Disaster Recovery Plan
+  trust_center:
+    url: https://trust.levitate.ai
+    platform: Vanta
+    http_status: 200
+  security_controls_published:
+    - OAuth-based email account access rather than stored mailbox credentials
+    - Per-user unique encryption keys managed by AWS KMS
+    - AWS KMS FIPS 140-2 validated hardware security modules
+  not_claimed:
+    note: >-
+      ISO 27001, HIPAA, PCI DSS, FedRAMP and a named GDPR/CCPA program are NOT asserted on any Levitate
+      page reachable without an MNDA. Recorded as absent, not as failing.
+  vendor_security_contact: security@levitateapp.com

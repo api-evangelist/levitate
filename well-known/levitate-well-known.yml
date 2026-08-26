@@ -1,0 +1,95 @@
+generated: '2026-08-25'
+method: probed
+source: live HTTPS probes of every Levitate host named in apis.yml and the OpenAPI servers[] block
+note: >-
+  Levitate serves no security.txt, api-catalog or ai-plugin.json on any host. What it does serve is a
+  complete OAuth 2.0 discovery surface: RFC 8414 authorization-server metadata and RFC 9728
+  protected-resource metadata on both api.levitate.ai and mcp.levitate.ai, plus full OpenID Connect
+  discovery on login.levitate.ai. The RFC 9728 documents on the /mcp resource path are what let an MCP
+  client discover Levitate's authorization server automatically from the 401 challenge.
+hosts:
+  - host: api.levitate.ai
+    documents:
+      - path: /.well-known/oauth-authorization-server
+        status: 200
+        file: levitate-api-oauth-authorization-server.json
+      - path: /.well-known/oauth-protected-resource
+        status: 200
+        file: levitate-api-oauth-protected-resource.json
+      - path: /.well-known/oauth-protected-resource/mcp
+        status: 200
+        file: levitate-api-oauth-protected-resource-mcp.json
+      - path: /.well-known/security.txt
+        status: 404
+      - path: /.well-known/openid-configuration
+        status: 404
+      - path: /.well-known/api-catalog
+        status: 404
+      - path: /.well-known/ai-plugin.json
+        status: 404
+      - path: /.well-known/agent-card.json
+        status: 404
+      - path: /.well-known/agent.json
+        status: 404
+  - host: mcp.levitate.ai
+    documents:
+      - path: /.well-known/oauth-authorization-server
+        status: 200
+        file: levitate-mcp-oauth-authorization-server.json
+      - path: /.well-known/oauth-protected-resource/mcp
+        status: 200
+        file: levitate-mcp-oauth-protected-resource-mcp.json
+      - path: /.well-known/security.txt
+        status: 404
+      - path: /.well-known/agent-card.json
+        status: 404
+      - path: /.well-known/agent.json
+        status: 404
+  - host: login.levitate.ai
+    documents:
+      - path: /.well-known/openid-configuration
+        status: 200
+        file: levitate-login-openid-configuration.json
+      - path: /.well-known/oauth-authorization-server
+        status: 200
+        file: levitate-login-oauth-authorization-server.json
+      - path: /.well-known/oauth-protected-resource
+        status: 404
+      - path: /.well-known/security.txt
+        status: 404
+      - path: /.well-known/api-catalog
+        status: 404
+      - path: /.well-known/ai-plugin.json
+        status: 404
+      - path: /.well-known/agent-card.json
+        status: 404
+      - path: /.well-known/agent.json
+        status: 404
+  - host: www.levitate.ai
+    documents:
+      - path: /.well-known/security.txt
+        status: 404
+      - path: /.well-known/openid-configuration
+        status: 404
+      - path: /.well-known/oauth-authorization-server
+        status: 404
+      - path: /.well-known/api-catalog
+        status: 404
+      - path: /.well-known/ai-plugin.json
+        status: 404
+      - path: /.well-known/agent-card.json
+        status: 404
+      - path: /.well-known/agent.json
+        status: 404
+      - path: /llms.txt
+        status: 404
+  - host: help.levitate.ai
+    documents:
+      - path: /.well-known/security.txt
+        status: 404
+      - path: /.well-known/api-catalog
+        status: 404
+      - path: /.well-known/agent-card.json
+        status: 404
+      - path: /llms.txt
+        status: 404
