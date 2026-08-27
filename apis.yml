@@ -47,75 +47,108 @@ tags_raw:
   - agent-native
   - saas
 apis:
-  - name: Levitate Public API
-    description: >-
-      REST API (OpenAPI 3.1.1, 19 operations) for reading and writing Levitate contacts, contact key
-      facts, companies and notes. Cursor-paged list endpoints plus a nested boolean (AND/OR/NOT)
-      contact search. Authenticated with a Personal API Key or an OAuth 2.0 authorization-code +
-      PKCE bearer token under the levitate:contacts scope. The Public API feature must be enabled on
-      an account by Levitate Support before keys can be generated.
-    humanURL: https://help.levitate.ai/article/735-levitate-public-api
-    baseURL: https://api.levitate.ai/public/v1
-    tags:
-      - CRM
-      - Contacts
-      - Relationship Marketing
-      - Small Business
-    tags_raw:
-      - crm
-      - contacts
-      - relationship-marketing
-      - small-business
-    properties:
-      - type: OpenAPI
-        url: openapi/levitate-public-v1-openapi.json
-      - type: Documentation
-        url: https://help.levitate.ai/article/735-levitate-public-api
-      - type: APIReference
-        url: https://api.levitate.ai/docs/
-      - type: Authentication
-        url: authentication/levitate-authentication.yml
-      - type: OAuthScopes
-        url: scopes/levitate-scopes.yml
-      - type: Conventions
-        url: conventions/levitate-conventions.yml
-      - type: ErrorCatalog
-        url: errors/levitate-problem-types.yml
-      - type: DataModel
-        url: data-model/levitate-data-model.yml
-      - type: Overlay
-        url: overlays/levitate-public-v1-overlay.yaml
-  - name: Levitate MCP Server
-    description: >-
-      Hosted remote MCP server (streamable HTTP) that connects Levitate to AI assistants — Claude
-      Desktop, Claude Code, ChatGPT, Cursor, VS Code Copilot, Windsurf and any MCP-compatible HTTP
-      client. Tools cover contact search and profile lookup, contact tagging and edits, company
-      search, action items, notes, contact timeline, donations and campaigns, opportunity pipelines,
-      insurance policies, email drafts, email campaign and template management, social posts, file
-      upload, and live queries across 11+ connected integrations. Authentication is OAuth 2.0 with
-      PKCE against login.levitate.ai; no API keys. The feature is enabled per account by a Levitate
-      Success Specialist.
-    humanURL: https://help.levitate.ai/article/589-levitate-mcp-server
-    baseURL: https://mcp.levitate.ai/mcp
-    tags:
-      - MCP
-      - agent-native
-      - CRM
-      - Contacts
-    tags_raw:
-      - mcp
-      - agent-native
-      - crm
-      - contacts
-    properties:
-      - type: MCPServer
-        url: mcp/levitate-mcp.yml
-      - type: MCPServer
-        url: https://mcp.levitate.ai/mcp
-      - type: ToolCrosswalk
-        url: mcp/levitate-tool-crosswalk.yml
-      - type: Documentation
-        url: https://help.levitate.ai/article/589-levitate-mcp-server
+- name: Levitate MCP Server
+  description: >-
+    Hosted remote MCP server (streamable HTTP) that connects Levitate to AI assistants — Claude Desktop,
+    Claude Code, ChatGPT, Cursor, VS Code Copilot, Windsurf and any MCP-compatible HTTP client. Tools
+    cover contact search and profile lookup, contact tagging and edits, company search, action items,
+    notes, contact timeline, donations and campaigns, opportunity pipelines, insurance policies, email
+    drafts, email campaign and template management, social posts, file upload, and live queries across
+    11+ connected integrations. Authentication is OAuth 2.0 with PKCE against login.levitate.ai; no API
+    keys. The feature is enabled per account by a Levitate Success Specialist.
+  humanURL: https://help.levitate.ai/article/589-levitate-mcp-server
+  baseURL: https://mcp.levitate.ai/mcp
+  tags:
+  - MCP
+  - agent-native
+  - CRM
+  - Contacts
+  tags_raw:
+  - mcp
+  - agent-native
+  - crm
+  - contacts
+  properties:
+  - type: MCPServer
+    url: mcp/levitate-mcp.yml
+  - type: MCPServer
+    url: https://mcp.levitate.ai/mcp
+  - type: ToolCrosswalk
+    url: mcp/levitate-tool-crosswalk.yml
+  - type: Documentation
+    url: https://help.levitate.ai/article/589-levitate-mcp-server
+- aid: levitate:levitate-companies-api
+  name: Levitate Companies API
+  description: The Companies API from Levitate — 2 operation(s) for companies.
+  humanURL: https://help.levitate.ai/article/735-levitate-public-api
+  baseURL: https://api.levitate.ai/public/v1
+  tags:
+  - Companies
+  properties:
+  - type: OpenAPI
+    url: openapi/levitate-companies-api-openapi.yml
+  - type: Documentation
+    url: https://help.levitate.ai/article/735-levitate-public-api
+  - type: APIReference
+    url: https://api.levitate.ai/docs/
+  - type: Authentication
+    url: authentication/levitate-authentication.yml
+  - type: OAuthScopes
+    url: scopes/levitate-scopes.yml
+  - type: Conventions
+    url: conventions/levitate-conventions.yml
+  - type: ErrorCatalog
+    url: errors/levitate-problem-types.yml
+  - type: DataModel
+    url: data-model/levitate-data-model.yml
+- aid: levitate:levitate-contacts-api
+  name: Levitate Contacts API
+  description: The Contacts API from Levitate — 5 operation(s) for contacts.
+  humanURL: https://help.levitate.ai/article/735-levitate-public-api
+  baseURL: https://api.levitate.ai/public/v1
+  tags:
+  - Contacts
+  properties:
+  - type: OpenAPI
+    url: openapi/levitate-contacts-api-openapi.yml
+  - type: Documentation
+    url: https://help.levitate.ai/article/735-levitate-public-api
+  - type: APIReference
+    url: https://api.levitate.ai/docs/
+  - type: Authentication
+    url: authentication/levitate-authentication.yml
+  - type: OAuthScopes
+    url: scopes/levitate-scopes.yml
+  - type: Conventions
+    url: conventions/levitate-conventions.yml
+  - type: ErrorCatalog
+    url: errors/levitate-problem-types.yml
+  - type: DataModel
+    url: data-model/levitate-data-model.yml
+- aid: levitate:levitate-notes-api
+  name: Levitate Notes API
+  description: The Notes API from Levitate — 2 operation(s) for notes.
+  humanURL: https://help.levitate.ai/article/735-levitate-public-api
+  baseURL: https://api.levitate.ai/public/v1
+  tags:
+  - Notes
+  properties:
+  - type: OpenAPI
+    url: openapi/levitate-notes-api-openapi.yml
+  - type: Documentation
+    url: https://help.levitate.ai/article/735-levitate-public-api
+  - type: APIReference
+    url: https://api.levitate.ai/docs/
+  - type: Authentication
+    url: authentication/levitate-authentication.yml
+  - type: OAuthScopes
+    url: scopes/levitate-scopes.yml
+  - type: Conventions
+    url: conventions/levitate-conventions.yml
+  - type: ErrorCatalog
+    url: errors/levitate-problem-types.yml
+  - type: DataModel
+    url: data-model/levitate-data-model.yml
 common:
   - type: VulnerabilityDisclosure
     url: security/levitate-vulnerability-disclosure.yml
