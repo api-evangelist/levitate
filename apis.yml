@@ -162,6 +162,9 @@ apis:
   - type: DataModel
     url: data-model/levitate-data-model.yml
 common:
+  - type: CapabilityMap
+    url: capabilities/levitate-capability-edges.yml
+    name: Levitate Business Capability Map
   - type: VulnerabilityDisclosure
     url: security/levitate-vulnerability-disclosure.yml
   - type: DomainSecurity
