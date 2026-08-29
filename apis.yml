@@ -14,6 +14,18 @@ description: >-
   mcp.levitate.ai/mcp that gives AI assistants natural-language access to contacts, action items,
   donations, campaigns, opportunities, policies, notes and connected-integration data.
 url: https://raw.githubusercontent.com/api-evangelist/levitate/refs/heads/main/apis.yml
+deliveryModel:
+  model: saas
+  open_source: false
+  commercial: true
+  callable_host: true
+  label: Hosted service · you call their endpoint
+  confidence: high
+  source:
+  - openapi
+  - pricing
+  generated: '2026-08-28'
+  method: derived
 image: https://cdn.prod.website-files.com/645165b093e7c8d734211d5d/64ac9c0f52d7bf5e396e6261_og%20image.png
 x-type: company
 x-source: harvest:secondary-market
