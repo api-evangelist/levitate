@@ -1,0 +1,550 @@
+openapi: 3.2.0
+info:
+  title: LevitateAPI | public-v1 Notes API
+  version: 1.0.0
+servers:
+- url: https://api.levitate.ai/
+tags:
+- name: Notes
+paths:
+  /public/v1/Notes/{id}:
+    get:
+      tags:
+      - Notes
+      summary: Get Note by Id
+      description: '
+
+        ### Retrieves a note for a given identifier.
+
+        Returns `404` when the note doesn''t exist, has been deleted, is on another account, or isn''t visible to
+
+        the caller — a note the caller can''t see is never distinguished from one that doesn''t exist.
+
+
+
+        **Required Scope:** `levitate:contacts`'
+      operationId: GetNoteById
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OperationResultOfNote'
+        '401':
+          description: Unauthorized
+          content:
+            application/json: {}
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OperationResult'
+    delete:
+      tags:
+      - Notes
+      summary: Delete a note
+      description: '
+
+        ### Soft-deletes a note, removing it from all reads immediately.
+
+        Any caller who can see the note may delete it. Returns `404` when the note doesn''t exist, has already been
+
+        deleted, is on another account, or isn''t visible to the caller — a note the caller can''t see is never
+
+        distinguished from one that doesn''t exist. Deleting is idempotent-ish: a second delete returns `404`.
+
+
+
+        **Required Scope:** `levitate:contacts`'
+      operationId: DeleteNote
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OperationResult'
+        '401':
+          description: Unauthorized
+          content:
+            application/json: {}
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OperationResult'
+  /public/v1/Notes:
+    get:
+      tags:
+      - Notes
+      summary: List and filter notes
+      description: '
+
+        ### Returns a cursor-paged list of notes matching the supplied filters.
+
+        Filters combine with AND. Each row is a lean summary carrying a plain-text `preview`; follow its `url` for the
+
+        full note. Bulk-send, communication-derived, and action-item records are never returned.
+
+
+        **Sortable fields:** `creationDate` (default, descending). Prefix a field with `-` for descending order.
+
+
+
+        **Required Scope:** `levitate:contacts`'
+      operationId: ListNotes
+      parameters:
+      - name: contactId
+        in: query
+        description: Only notes that reference this contact
+        schema:
+          type: string
+      - name: companyId
+        in: query
+        description: Only notes that reference this company
+        schema:
+          type: string
+      - name: createdAfter
+        in: query
+        description: Only notes created on or after this ISO 8601 date
+        schema:
+          type: string
+      - name: createdBefore
+        in: query
+        description: Only notes created on or before this ISO 8601 date
+        schema:
+          type: string
+      - name: updatedAfter
+        in: query
+        description: Only notes last modified on or after this ISO 8601 date
+        schema:
+          type: string
+      - name: updatedBefore
+        in: query
+        description: Only notes last modified on or before this ISO 8601 date
+        schema:
+          type: string
+      - name: limit
+        in: query
+        description: Maximum results per page (default 25, max 100)
+        schema:
+          pattern: ^-?(?:0|[1-9]\d*)$
+          type:
+          - integer
+          - string
+          format: int32
+      - name: pageToken
+        in: query
+        description: Opaque pagination cursor from a previous response; omit for the first page
+        schema:
+          type: string
+      - name: sort
+        in: query
+        description: Sort field; prefix with '-' for descending. See the endpoint description for supported fields.
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OperationResultOfPagedCollectionOfNoteSummary'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OperationResult'
+        '401':
+          description: Unauthorized
+          content:
+            application/json: {}
+    post:
+      tags:
+      - Notes
+      summary: Log a note
+      description: '
+
+        ### Logs a note against one or more contacts and companies, returning the full note.
+
+        Requires a `body` (an HTML fragment — the `<lev-content>` wrapper is added for you and disallowed markup is
+
+        stripped) and at least one `reference` (a `{ type, id }` where `type` is `contact` or `company`). A reference
+
+        that isn''t a live, visible contact/company on the account is rejected. `visibility` is optional (`shared` or
+
+        `private`, defaulting to the caller''s default visibility). Logging a note may fan out to the contact timeline,
+
+        Keep-in-Touch, and any connected CRM.
+
+
+        ### Allowed HTML
+
+        The `body` is sanitized against a fixed allowlist. Any tag or attribute not listed below is **stripped**
+
+        (the note is not rejected), so send a clean fragment to avoid surprises. Allowed elements:
+
+        - **Text & inline:** `b`, `i`, `u`, `s`, `strike`, `em`, `strong`, `small`, `big`, `sub`, `sup`, `abbr`, `acronym`, `cite`, `code`, `dfn`, `kbd`, `samp`, `var`, `q`, `tt`, `bdo`, `font`, `span`
+
+        - **Blocks & headings:** `p`, `div`, `section`, `article`, `address`, `center`, `blockquote`, `pre`, `h1`–`h6`, `hr`, `br`
+
+        - **Lists:** `ul`, `ol`, `li`, `dl`, `dt`, `dd`
+
+        - **Tables:** `table`, `caption`, `col`, `colgroup`, `thead`, `tbody`, `tfoot`, `tr`, `th`, `td`
+
+        - **Links & media:** `a`, `img`, `map`, `area`, `ins`, `del`
+
+
+        Attributes are allowlisted per element; scripting/event attributes (e.g. `onclick`) are always dropped.
+
+        `a` links keep only `http`, `https`, `mailto`, and `tel` hrefs (other schemes such as `javascript:` are
+
+        stripped). `img` sources must be an `https` URL or an inline base64 data URI. Do **not** include the
+
+        `<lev-content>` wrapper — it is added for you and is the only permitted root.
+
+
+
+        **Required Scope:** `levitate:contacts`'
+      operationId: CreateNote
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NoteWrite'
+          application/*+json:
+            schema:
+              $ref: '#/components/schemas/NoteWrite'
+          application/json-patch+json:
+            schema:
+              $ref: '#/components/schemas/NoteWrite'
+        required: true
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OperationResultOfNote'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OperationResult'
+        '401':
+          description: Unauthorized
+          content:
+            application/json: {}
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OperationResult'
+components:
+  schemas:
+    NoteReference:
+      type: object
+      properties:
+        type:
+          type:
+          - 'null'
+          - string
+          description: 'The kind of referenced resource: ''contact'' or ''company'''
+        name:
+          type:
+          - 'null'
+          - string
+          description: Display name of the referenced resource
+        url:
+          type:
+          - 'null'
+          - string
+          description: Path to the referenced resource's public API record, when one is exposed
+        id:
+          type:
+          - 'null'
+          - string
+          description: Unique identifier generated by Levitate
+    NoteWrite:
+      type: object
+      properties:
+        body:
+          maxLength: 100000
+          minLength: 0
+          type:
+          - 'null'
+          - string
+          description: The note body as an HTML fragment (no <lev-content> wrapper). Required; disallowed markup is stripped on save.
+        references:
+          maxItems: 25
+          type:
+          - 'null'
+          - array
+          items:
+            $ref: '#/components/schemas/NoteReferenceWrite'
+          description: The contacts and companies to attach the note to. At least one is required (no more than 25).
+        visibility:
+          type:
+          - 'null'
+          - string
+          description: 'Visibility of the note: ''shared'' (visible to the whole account) or ''private''. Defaults to the caller''s default visibility.'
+      additionalProperties: false
+    PagedCollectionOfNoteSummary:
+      type: object
+      properties:
+        values:
+          type:
+          - 'null'
+          - array
+          items:
+            $ref: '#/components/schemas/NoteSummary'
+        pageToken:
+          type:
+          - 'null'
+          - string
+        totalCount:
+          pattern: ^-?(?:0|[1-9]\d*)$
+          type:
+          - integer
+          - string
+          format: int64
+        debug: {}
+    Note:
+      type: object
+      properties:
+        body:
+          type:
+          - 'null'
+          - string
+          description: The note body as a sanitized HTML fragment (the <lev-content> wrapper is stripped)
+        bodyWrapped:
+          type:
+          - 'null'
+          - string
+          description: The full note document as stored, wrapped in <lev-content>
+        references:
+          type:
+          - 'null'
+          - array
+          items:
+            $ref: '#/components/schemas/NoteReference'
+          description: The contacts and companies this note is attached to
+        visibility:
+          type:
+          - 'null'
+          - string
+          description: 'Visibility of the note: ''shared'' (visible to the whole account) or ''private'''
+        createdBy:
+          allOf:
+          - $ref: '#/components/schemas/Reference'
+          description: The user who created the note
+        creationDate:
+          type:
+          - 'null'
+          - string
+          description: Date/time this was created in ISO 8601 format
+          format: date-time
+        lastModifiedDate:
+          type:
+          - 'null'
+          - string
+          description: Date/time this was last modified in ISO 8601 format
+          format: date-time
+        id:
+          type:
+          - 'null'
+          - string
+          description: Unique identifier generated by Levitate
+    OperationResultOfPagedCollectionOfNoteSummary:
+      type: object
+      properties:
+        success:
+          type: boolean
+        systemMessage:
+          type:
+          - 'null'
+          - string
+        systemCode:
+          pattern: ^-?(?:0|[1-9]\d*)$
+          type:
+          - integer
+          - string
+          format: int32
+        error:
+          $ref: '#/components/schemas/ITechnicalError'
+        requestId:
+          type:
+          - 'null'
+          - string
+        value:
+          $ref: '#/components/schemas/PagedCollectionOfNoteSummary'
+    ITechnicalError:
+      type: object
+      properties:
+        errorMessage:
+          type:
+          - 'null'
+          - string
+        timestamp:
+          type: string
+          format: date-time
+        source:
+          type:
+          - 'null'
+          - string
+        errorCode:
+          pattern: ^-?(?:0|[1-9]\d*)$
+          type:
+          - integer
+          - string
+          format: int64
+        category:
+          type:
+          - 'null'
+          - string
+    NoteSummary:
+      type: object
+      properties:
+        url:
+          type:
+          - 'null'
+          - string
+          description: Path to the note's full record
+        preview:
+          type:
+          - 'null'
+          - string
+          description: Plain-text first line of the note body
+        references:
+          type:
+          - 'null'
+          - array
+          items:
+            $ref: '#/components/schemas/NoteReference'
+          description: The contacts and companies this note is attached to
+        visibility:
+          type:
+          - 'null'
+          - string
+          description: 'Visibility of the note: ''shared'' (visible to the whole account) or ''private'''
+        createdBy:
+          allOf:
+          - $ref: '#/components/schemas/Reference'
+          description: The user who created the note
+        creationDate:
+          type:
+          - 'null'
+          - string
+          description: Date/time this note was created in ISO 8601 format
+          format: date-time
+        lastModifiedDate:
+          type:
+          - 'null'
+          - string
+          description: Date/time this note was last modified in ISO 8601 format
+          format: date-time
+        id:
+          type:
+          - 'null'
+          - string
+          description: Unique identifier generated by Levitate
+    OperationResultOfNote:
+      type: object
+      properties:
+        success:
+          type: boolean
+        systemMessage:
+          type:
+          - 'null'
+          - string
+        systemCode:
+          pattern: ^-?(?:0|[1-9]\d*)$
+          type:
+          - integer
+          - string
+          format: int32
+        error:
+          $ref: '#/components/schemas/ITechnicalError'
+        requestId:
+          type:
+          - 'null'
+          - string
+        value:
+          $ref: '#/components/schemas/Note'
+    OperationResult:
+      type: object
+      properties:
+        success:
+          type: boolean
+        systemMessage:
+          type:
+          - 'null'
+          - string
+        systemCode:
+          pattern: ^-?(?:0|[1-9]\d*)$
+          type:
+          - integer
+          - string
+          format: int32
+        error:
+          $ref: '#/components/schemas/ITechnicalError'
+        requestId:
+          type:
+          - 'null'
+          - string
+    Reference:
+      type: object
+      properties:
+        name:
+          type:
+          - 'null'
+          - string
+          description: Display name of the referenced resource
+        id:
+          type:
+          - 'null'
+          - string
+          description: Unique identifier generated by Levitate
+    NoteReferenceWrite:
+      type: object
+      properties:
+        type:
+          type:
+          - 'null'
+          - string
+          description: 'The kind of referenced resource: ''contact'' or ''company'''
+        id:
+          type:
+          - 'null'
+          - string
+          description: Unique identifier generated by Levitate
+      additionalProperties: false
+  securitySchemes:
+    OAuth2:
+      type: oauth2
+      description: Levitate OAuth2 Authorization Flow
+      flows:
+        authorizationCode:
+          authorizationUrl: https://login.levitate.ai/oauth2/authorize
+          tokenUrl: https://login.levitate.ai/oauth2/token
+          scopes:
+            levitate:contacts: Access Levitate contacts and related operations
+            levitate:campaigns: Access Levitate campaigns and related operations

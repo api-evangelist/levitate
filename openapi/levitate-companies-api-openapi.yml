@@ -1,0 +1,761 @@
+openapi: 3.2.0
+info:
+  title: LevitateAPI | public-v1 Companies API
+  version: 1.0.0
+servers:
+- url: https://api.levitate.ai/
+tags:
+- name: Companies
+paths:
+  /public/v1/Companies/{id}:
+    get:
+      tags:
+      - Companies
+      summary: Get Company by Id
+      description: '
+
+        ### Retrieves company information for a given identifier.
+
+
+
+        **Required Scope:** `levitate:contacts`'
+      operationId: GetCompanyById
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OperationResultOfCompany'
+        '401':
+          description: Unauthorized
+          content:
+            application/json: {}
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OperationResult'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OperationResult'
+    patch:
+      tags:
+      - Companies
+      summary: Update a company
+      description: '
+
+        ### Partially updates a company and returns the full record.
+
+        Only the fields present in the body are changed: an omitted field is left unchanged, an explicit `null`
+
+        clears a scalar, and a provided array replaces the whole array. `name` may be changed but not cleared.
+
+        Unknown or read-only fields are rejected. Changing the name or an email domain to one already used by
+
+        another company on the account returns `409`; an email domain that cannot identify a company is rejected
+
+        with `400`.
+
+
+
+        **Required Scope:** `levitate:contacts`'
+      operationId: UpdateCompany
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CompanyPatch'
+          application/*+json:
+            schema:
+              $ref: '#/components/schemas/CompanyPatch'
+          application/json-patch+json:
+            schema:
+              $ref: '#/components/schemas/CompanyPatch'
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OperationResultOfCompany'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OperationResult'
+        '401':
+          description: Unauthorized
+          content:
+            application/json: {}
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OperationResult'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OperationResult'
+        '409':
+          description: Conflict
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OperationResult'
+    delete:
+      tags:
+      - Companies
+      summary: Delete a company
+      description: '
+
+        ### Permanently removes a company.
+
+        Contacts associated with the company are detached from it, not deleted. Returns `404` when the company
+
+        doesn''t exist on the caller''s account.
+
+
+
+        **Required Scope:** `levitate:contacts`'
+      operationId: DeleteCompany
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OperationResult'
+        '401':
+          description: Unauthorized
+          content:
+            application/json: {}
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OperationResult'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OperationResult'
+  /public/v1/Companies:
+    get:
+      tags:
+      - Companies
+      summary: List companies
+      description: '
+
+        ### Returns a cursor-paged list of companies matching the supplied filters.
+
+        The query-string filters combine with AND. `name` is a case-insensitive prefix match; `tags` is repeatable
+
+        and every supplied tag must be present on the company (max 10). Each row is a lean summary; follow its
+
+        `url` for the full record.
+
+
+        **Sortable fields:** `name` (default, ascending) and `creationDate`. Prefix a field with `-` for descending order (e.g. `sort=-name`).
+
+
+
+        **Required Scope:** `levitate:contacts`'
+      operationId: ListCompanies
+      parameters:
+      - name: name
+        in: query
+        description: Filter by company name
+        schema:
+          type: string
+      - name: tags
+        in: query
+        description: Filter by tag; repeatable, combined with AND (max 10)
+        schema:
+          type: array
+          items:
+            type: string
+      - name: limit
+        in: query
+        description: Maximum results per page (default 25, max 100)
+        schema:
+          pattern: ^-?(?:0|[1-9]\d*)$
+          type:
+          - integer
+          - string
+          format: int32
+      - name: pageToken
+        in: query
+        description: Opaque pagination cursor from a previous response; omit for the first page
+        schema:
+          type: string
+      - name: sort
+        in: query
+        description: Sort field; prefix with '-' for descending. See the endpoint description for supported fields.
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OperationResultOfPagedCollectionOfCompanySummary'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OperationResult'
+        '401':
+          description: Unauthorized
+          content:
+            application/json: {}
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OperationResult'
+    post:
+      tags:
+      - Companies
+      summary: Create a company
+      description: '
+
+        ### Creates a company from the supplied fields and returns the full record.
+
+        A `name` is required. New tags are created automatically. A create that matches a company already on the
+
+        account — by name, or by one of the supplied email domains — returns `409` and creates nothing. An email
+
+        domain that cannot identify a company (a free-email provider, a malformed host, or any domain when the
+
+        account has company-domain matching disabled) is rejected with `400` rather than silently dropped. Unknown
+
+        or read-only fields are rejected, and the company is stored exactly as supplied — no enrichment is applied.
+
+
+
+        **Required Scope:** `levitate:contacts`'
+      operationId: CreateCompany
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CompanyWrite'
+          application/*+json:
+            schema:
+              $ref: '#/components/schemas/CompanyWrite'
+          application/json-patch+json:
+            schema:
+              $ref: '#/components/schemas/CompanyWrite'
+        required: true
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OperationResultOfCompany'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OperationResult'
+        '401':
+          description: Unauthorized
+          content:
+            application/json: {}
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OperationResult'
+        '409':
+          description: Conflict
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OperationResult'
+components:
+  schemas:
+    Company:
+      type: object
+      properties:
+        name:
+          type:
+          - 'null'
+          - string
+          description: Display name of the company
+        description:
+          type:
+          - 'null'
+          - string
+          description: Description of the company
+        emailDomains:
+          type:
+          - 'null'
+          - array
+          items:
+            type: string
+          description: List of email domains associated with the company, eg. example.com
+        webSite:
+          type:
+          - 'null'
+          - string
+          description: Url to the company's website
+        logoUrl:
+          type:
+          - 'null'
+          - string
+          description: Url to a display logo for the company and should point to an image file
+        phoneNumbers:
+          type:
+          - 'null'
+          - array
+          items:
+            $ref: '#/components/schemas/PhoneNumber'
+          description: A list of phone numbers for this company that do not tie to a specific contact
+        keyFactsCollection:
+          type:
+          - 'null'
+          - array
+          items:
+            $ref: '#/components/schemas/CompanyKeyFact'
+          description: A collection of key facts, which are a unique piece of information about a company that you can reference to appear personable and genuine.
+        tags:
+          type:
+          - 'null'
+          - array
+          items:
+            type: string
+          description: A list of values that can be used to help group companies and contacts together for easier management and search
+        address:
+          allOf:
+          - $ref: '#/components/schemas/Address'
+          description: A physical or mailing address associated with this company
+        id:
+          type:
+          - 'null'
+          - string
+          description: Unique identifier generated by Levitate
+    PhoneNumber:
+      required:
+      - value
+      type: object
+      properties:
+        label:
+          type:
+          - 'null'
+          - string
+          description: The type of phone number, eg. Home, Mobile, etc.
+        value:
+          type:
+          - 'null'
+          - string
+          description: Unformatted value of the phone number
+        metadata:
+          allOf:
+          - $ref: '#/components/schemas/PhoneNumberMetadata'
+          description: Extra metadata and formatting options for the phone number
+        canSMS:
+          allOf:
+          - $ref: '#/components/schemas/Capability'
+          description: 'Can this phone number receive text messages: Unknown, Yes, No, Maybe, Opted out. Server-owned — learned from real send outcomes; any value sent on a write is ignored.'
+    CompanyWrite:
+      type: object
+      properties:
+        name:
+          maxLength: 200
+          minLength: 0
+          type:
+          - 'null'
+          - string
+          description: Display name of the company
+        description:
+          maxLength: 5000
+          minLength: 0
+          type:
+          - 'null'
+          - string
+          description: Description of the company
+        emailDomains:
+          maxItems: 25
+          type:
+          - 'null'
+          - array
+          items:
+            type: string
+          description: List of email domains associated with the company, eg. example.com. A domain already claimed by another company is rejected.
+        webSite:
+          maxLength: 2048
+          minLength: 0
+          type:
+          - 'null'
+          - string
+          description: Url to the company's website
+        logoUrl:
+          maxLength: 2048
+          minLength: 0
+          type:
+          - 'null'
+          - string
+          description: Url to a display logo for the company and should point to an image file
+        phoneNumbers:
+          maxItems: 25
+          type:
+          - 'null'
+          - array
+          items:
+            $ref: '#/components/schemas/PhoneNumber'
+          description: A list of phone numbers for this company that do not tie to a specific contact. Each value is capped at 50 characters and each label at 50.
+        tags:
+          maxItems: 50
+          type:
+          - 'null'
+          - array
+          items:
+            type: string
+          description: A list of values used to group companies and contacts; new tags are created automatically. Each tag name is capped at 100 characters.
+        address:
+          allOf:
+          - $ref: '#/components/schemas/Address'
+          description: A physical or mailing address associated with this company. Address lines are capped at 200 characters; city, state/province, and country at 100; postal code at 20.
+      additionalProperties: false
+    OperationResultOfPagedCollectionOfCompanySummary:
+      type: object
+      properties:
+        success:
+          type: boolean
+        systemMessage:
+          type:
+          - 'null'
+          - string
+        systemCode:
+          pattern: ^-?(?:0|[1-9]\d*)$
+          type:
+          - integer
+          - string
+          format: int32
+        error:
+          $ref: '#/components/schemas/ITechnicalError'
+        requestId:
+          type:
+          - 'null'
+          - string
+        value:
+          $ref: '#/components/schemas/PagedCollectionOfCompanySummary'
+    Address:
+      type: object
+      properties:
+        address1:
+          type:
+          - 'null'
+          - string
+          description: Street Address - First Line
+        address2:
+          type:
+          - 'null'
+          - string
+          description: Street Address - Second Line
+        city:
+          type:
+          - 'null'
+          - string
+          description: City name
+        stateProvince:
+          type:
+          - 'null'
+          - string
+          description: State or Province - Code or full name allowed
+        postalCode:
+          type:
+          - 'null'
+          - string
+          description: Postal zip code
+        country:
+          type:
+          - 'null'
+          - string
+          description: Country of the address - Code or full name allowed
+    ITechnicalError:
+      type: object
+      properties:
+        errorMessage:
+          type:
+          - 'null'
+          - string
+        timestamp:
+          type: string
+          format: date-time
+        source:
+          type:
+          - 'null'
+          - string
+        errorCode:
+          pattern: ^-?(?:0|[1-9]\d*)$
+          type:
+          - integer
+          - string
+          format: int64
+        category:
+          type:
+          - 'null'
+          - string
+    PhoneNumberMetadata:
+      type: object
+      properties:
+        e164:
+          type:
+          - 'null'
+          - string
+          description: The international standard E.164 formatted string
+        standard:
+          type:
+          - 'null'
+          - string
+          description: A localized standard of formatting based on the country code, eg. (919) 555-3333
+        countryCode:
+          pattern: ^-?(?:0|[1-9]\d*)$
+          type:
+          - integer
+          - string
+          description: Country code for the phone number, eg. 1 for US based phone numbers
+          format: int32
+        extension:
+          type:
+          - 'null'
+          - string
+          description: An optional number that is an extension to be keyed after the main number to reach the phone
+    CompanySummary:
+      type: object
+      properties:
+        url:
+          type:
+          - 'null'
+          - string
+          description: Path to the company's full record
+        name:
+          type:
+          - 'null'
+          - string
+          description: Display name of the company
+        webSite:
+          type:
+          - 'null'
+          - string
+          description: Url to the company's website
+        logoUrl:
+          type:
+          - 'null'
+          - string
+          description: Url to a display logo for the company
+        emailDomains:
+          type:
+          - 'null'
+          - array
+          items:
+            type: string
+          description: List of email domains associated with the company, eg. example.com
+        tags:
+          type:
+          - 'null'
+          - array
+          items:
+            type: string
+          description: A list of values that can be used to help group companies and contacts together for easier management and search
+        creationDate:
+          type:
+          - 'null'
+          - string
+          description: Date/time this company was created in ISO 8601 format
+          format: date-time
+        id:
+          type:
+          - 'null'
+          - string
+          description: Unique identifier generated by Levitate
+    OperationResultOfCompany:
+      type: object
+      properties:
+        success:
+          type: boolean
+        systemMessage:
+          type:
+          - 'null'
+          - string
+        systemCode:
+          pattern: ^-?(?:0|[1-9]\d*)$
+          type:
+          - integer
+          - string
+          format: int32
+        error:
+          $ref: '#/components/schemas/ITechnicalError'
+        requestId:
+          type:
+          - 'null'
+          - string
+        value:
+          $ref: '#/components/schemas/Company'
+    Capability:
+      enum:
+      - 'Yes'
+      - 'No'
+      - Maybe
+      - OptOut
+      - Unknown
+    OperationResult:
+      type: object
+      properties:
+        success:
+          type: boolean
+        systemMessage:
+          type:
+          - 'null'
+          - string
+        systemCode:
+          pattern: ^-?(?:0|[1-9]\d*)$
+          type:
+          - integer
+          - string
+          format: int32
+        error:
+          $ref: '#/components/schemas/ITechnicalError'
+        requestId:
+          type:
+          - 'null'
+          - string
+    CompanyKeyFact:
+      type: object
+      properties:
+        value:
+          type:
+          - 'null'
+          - string
+          description: Display value for the Key Fact
+        creatorId:
+          type:
+          - 'null'
+          - string
+          description: The unique identifier of the user who created this key fact
+        creationDate:
+          type:
+          - 'null'
+          - string
+          description: Date/time this was created in ISO 8601 format
+          format: date-time
+        lastModifiedDate:
+          type:
+          - 'null'
+          - string
+          description: Date/time this was last modified in ISO 8601 format
+          format: date-time
+        id:
+          type:
+          - 'null'
+          - string
+          description: Unique identifier generated by Levitate
+    CompanyPatch:
+      type: object
+      properties:
+        name:
+          maxLength: 200
+          type: string
+          description: Display name of the company; it may be changed but not cleared
+        description:
+          maxLength: 5000
+          type: string
+          description: Description of the company
+        emailDomains:
+          maxItems: 25
+          type: array
+          items:
+            type: string
+          description: List of email domains associated with the company, eg. example.com. A provided array replaces the existing domains; a domain already claimed by another company is rejected.
+        webSite:
+          maxLength: 2048
+          type: string
+          description: Url to the company's website
+        logoUrl:
+          maxLength: 2048
+          type: string
+          description: Url to a display logo for the company and should point to an image file
+        phoneNumbers:
+          maxItems: 25
+          type: array
+          items:
+            $ref: '#/components/schemas/PhoneNumber'
+          description: A list of phone numbers for this company that do not tie to a specific contact. A provided array replaces the existing numbers. Each value is capped at 50 characters and each label at 50.
+        tags:
+          maxItems: 50
+          type: array
+          items:
+            type: string
+          description: A list of values used to group companies and contacts; new tags are created automatically. A provided array replaces the existing tags. Each tag name is capped at 100 characters.
+        address:
+          $ref: '#/components/schemas/Address'
+      additionalProperties: false
+    PagedCollectionOfCompanySummary:
+      type: object
+      properties:
+        values:
+          type:
+          - 'null'
+          - array
+          items:
+            $ref: '#/components/schemas/CompanySummary'
+        pageToken:
+          type:
+          - 'null'
+          - string
+        totalCount:
+          pattern: ^-?(?:0|[1-9]\d*)$
+          type:
+          - integer
+          - string
+          format: int64
+        debug: {}
+  securitySchemes:
+    OAuth2:
+      type: oauth2
+      description: Levitate OAuth2 Authorization Flow
+      flows:
+        authorizationCode:
+          authorizationUrl: https://login.levitate.ai/oauth2/authorize
+          tokenUrl: https://login.levitate.ai/oauth2/token
+          scopes:
+            levitate:contacts: Access Levitate contacts and related operations
+            levitate:campaigns: Access Levitate campaigns and related operations

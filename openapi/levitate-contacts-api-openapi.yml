@@ -1,0 +1,1448 @@
+openapi: 3.2.0
+info:
+  title: LevitateAPI | public-v1 Contacts API
+  version: 1.0.0
+servers:
+- url: https://api.levitate.ai/
+tags:
+- name: Contacts
+paths:
+  /public/v1/Contacts/{id}:
+    get:
+      tags:
+      - Contacts
+      summary: Get Contact by Id
+      description: '
+
+        ### Retrieves a contact''s full profile for a given identifier.
+
+
+
+        **Required Scope:** `levitate:contacts`'
+      operationId: GetContactById
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OperationResultOfContact'
+        '401':
+          description: Unauthorized
+          content:
+            application/json: {}
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OperationResult'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OperationResult'
+    patch:
+      tags:
+      - Contacts
+      summary: Update a contact
+      description: '
+
+        ### Partially updates a contact and returns the full profile.
+
+        Only the fields present in the body are changed: an omitted field is left unchanged, an explicit `null`
+
+        clears a scalar, and a provided array replaces the whole array (the first entry is primary). The company
+
+        is inferred and not settable. Unknown or read-only fields are rejected. Changing a contact''s email to one
+
+        that already exists on the account returns `409`; changing `visibility` without permission returns `403`.
+
+
+
+        **Required Scope:** `levitate:contacts`'
+      operationId: UpdateContact
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ContactPatch'
+          application/*+json:
+            schema:
+              $ref: '#/components/schemas/ContactPatch'
+          application/json-patch+json:
+            schema:
+              $ref: '#/components/schemas/ContactPatch'
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OperationResultOfContact'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OperationResult'
+        '401':
+          description: Unauthorized
+          content:
+            application/json: {}
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OperationResult'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OperationResult'
+        '409':
+          description: Conflict
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OperationResult'
+  /public/v1/Contacts:
+    get:
+      tags:
+      - Contacts
+      summary: List contacts
+      description: '
+
+        ### Returns a cursor-paged list of contacts matching the supplied filters.
+
+        The query-string filters combine with AND. For OR/NOT or grouped boolean queries, use `POST /public/v1/contacts/search`.
+
+        Each row is a lean summary; follow its `url` for the full profile.
+
+
+        **Sortable fields:** `creationDate` (default, descending) and `name`. Prefix a field with `-` for descending order (e.g. `sort=-name`).
+
+
+
+        **Required Scope:** `levitate:contacts`'
+      operationId: ListContacts
+      parameters:
+      - name: name
+        in: query
+        description: Filter by contact name
+        schema:
+          type: string
+      - name: email
+        in: query
+        description: Filter by email address
+        schema:
+          type: string
+      - name: companyName
+        in: query
+        description: Filter by company name
+        schema:
+          type: string
+      - name: tags
+        in: query
+        description: Filter by tag; repeatable, combined with AND (max 10)
+        schema:
+          type: array
+          items:
+            type: string
+      - name: location
+        in: query
+        description: Filter by city or state/province
+        schema:
+          type: string
+      - name: createdAfter
+        in: query
+        description: Only contacts created on or after this ISO 8601 date
+        schema:
+          type: string
+      - name: createdBefore
+        in: query
+        description: Only contacts created on or before this ISO 8601 date
+        schema:
+          type: string
+      - name: updatedAfter
+        in: query
+        description: Only contacts last modified on or after this ISO 8601 date
+        schema:
+          type: string
+      - name: updatedBefore
+        in: query
+        description: Only contacts last modified on or before this ISO 8601 date
+        schema:
+          type: string
+      - name: lastCommunicatedAfter
+        in: query
+        description: Only contacts last communicated with on or after this ISO 8601 date
+        schema:
+          type: string
+      - name: lastCommunicatedBefore
+        in: query
+        description: Only contacts last communicated with on or before this ISO 8601 date
+        schema:
+          type: string
+      - name: limit
+        in: query
+        description: Maximum results per page (default 25, max 100)
+        schema:
+          pattern: ^-?(?:0|[1-9]\d*)$
+          type:
+          - integer
+          - string
+          format: int32
+      - name: pageToken
+        in: query
+        description: Opaque pagination cursor from a previous response; omit for the first page
+        schema:
+          type: string
+      - name: sort
+        in: query
+        description: Sort field; prefix with '-' for descending. See the endpoint description for supported fields.
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OperationResultOfPagedCollectionOfContactSummary'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OperationResult'
+        '401':
+          description: Unauthorized
+          content:
+            application/json: {}
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OperationResult'
+    post:
+      tags:
+      - Contacts
+      summary: Create a contact
+      description: '
+
+        ### Creates a contact from the supplied fields and returns the full profile.
+
+        Requires at least one email address, or both a first and last name. The company is inferred from the
+
+        primary email''s domain and is not settable. New tags are created automatically. A create whose primary
+
+        email already exists on an account contact returns `409`. Unknown or read-only fields are rejected.
+
+
+
+        **Required Scope:** `levitate:contacts`'
+      operationId: CreateContact
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ContactWrite'
+          application/*+json:
+            schema:
+              $ref: '#/components/schemas/ContactWrite'
+          application/json-patch+json:
+            schema:
+              $ref: '#/components/schemas/ContactWrite'
+        required: true
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OperationResultOfContact'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OperationResult'
+        '401':
+          description: Unauthorized
+          content:
+            application/json: {}
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OperationResult'
+        '409':
+          description: Conflict
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OperationResult'
+  /public/v1/Contacts/search:
+    post:
+      tags:
+      - Contacts
+      summary: Search contacts with a boolean filter
+      description: '
+
+        ### Searches contacts with a nested boolean (AND/OR/NOT) filter and returns the same rows as the list endpoint.
+
+        The request body is a single `filter` node. A node is either a **group** — `{ op: and | or | not, filters: [ ... ] }`
+
+        (`and`/`or` take one or more children; `not` takes exactly one) — or a **condition** — `{ field, operator, value }`.
+
+        Paging and sort use the same query parameters as the list endpoint, and each row is the same lean `ContactSummary`.
+
+
+        **Filterable fields and operators** (an unknown field, or an operator not valid for a field, returns `400`):
+
+        - `name` — `contains` (case-insensitive prefix match on the display name)
+
+        - `email` — `equals` (matches any of the contact''s email addresses)
+
+        - `company` — `equals` (by company id) · `companyName` — `contains` (case-insensitive prefix match)
+
+        - `tags` — `contains`, `notContains`
+
+        - `city`, `stateProvince` — `equals`, `startsWith` (both are case-insensitive prefix matches)
+
+        - `postalCode` — `startsWith`
+
+        - `source` — `equals`
+
+        - `createdAt`, `updatedAt` — `before`, `after`, `on` (date-only `YYYY-MM-DD`; `on` matches the whole day)
+
+        - `lastCommunicationDate` — `before`, `after`, `on`, `isNull`
+
+        - `customFields.{name}` — `equals`, `isEmpty`, `isNotEmpty` (`{name}` must be a field defined on the account)
+
+        - `visibility` — `equals` (`shared` or `private`)
+
+        - `emailSubscribed`, `textSubscribed`, `hasEmail`, `hasPhone` — `equals` (boolean)
+
+
+        **Limits:** the tree may nest at most 5 levels deep and hold at most 50 conditions; every `value` is sent as a string.
+
+
+        **Sortable fields:** `creationDate` (default, descending) and `name`. Prefix a field with `-` for descending order.
+
+
+
+        **Required Scope:** `levitate:contacts`'
+      operationId: SearchContacts
+      parameters:
+      - name: limit
+        in: query
+        description: Maximum results per page (default 25, max 100)
+        schema:
+          pattern: ^-?(?:0|[1-9]\d*)$
+          type:
+          - integer
+          - string
+          format: int32
+      - name: pageToken
+        in: query
+        description: Opaque pagination cursor from a previous response; omit for the first page
+        schema:
+          type: string
+      - name: sort
+        in: query
+        description: Sort field; prefix with '-' for descending. See the endpoint description for supported fields.
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ContactSearchRequest'
+          application/*+json:
+            schema:
+              $ref: '#/components/schemas/ContactSearchRequest'
+          application/json-patch+json:
+            schema:
+              $ref: '#/components/schemas/ContactSearchRequest'
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OperationResultOfPagedCollectionOfContactSummary'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OperationResult'
+        '401':
+          description: Unauthorized
+          content:
+            application/json: {}
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OperationResult'
+  /public/v1/Contacts/{id}/keyfacts:
+    get:
+      tags:
+      - Contacts
+      summary: List a contact's key facts
+      description: '
+
+        ### Returns a contact''s key facts (birthdays, renewals, anniversaries, and similar dated facts).
+
+        The full collection is returned in a single page. A key fact supplied by an integration reports `readOnly: true`.
+
+
+
+        **Required Scope:** `levitate:contacts`'
+      operationId: ListContactKeyFacts
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OperationResultOfPagedCollectionOfKeyFact'
+        '401':
+          description: Unauthorized
+          content:
+            application/json: {}
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OperationResult'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OperationResult'
+    post:
+      tags:
+      - Contacts
+      summary: Add a key fact to a contact
+      description: '
+
+        ### Adds a key fact to a contact and returns the created fact.
+
+        Requires a `type` and at least a `value` or a `date`. When only a `date` is given, a display `value` is
+
+        synthesized from it. A contact may have at most 100 key facts.
+
+
+
+        **Required Scope:** `levitate:contacts`'
+      operationId: AddContactKeyFact
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/KeyFactWrite'
+          application/*+json:
+            schema:
+              $ref: '#/components/schemas/KeyFactWrite'
+          application/json-patch+json:
+            schema:
+              $ref: '#/components/schemas/KeyFactWrite'
+        required: true
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OperationResultOfKeyFact'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OperationResult'
+        '401':
+          description: Unauthorized
+          content:
+            application/json: {}
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OperationResult'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OperationResult'
+  /public/v1/Contacts/{id}/keyfacts/{keyFactId}:
+    get:
+      tags:
+      - Contacts
+      summary: Get one of a contact's key facts by Id
+      description: '
+
+        ### Retrieves a single key fact belonging to a contact.
+
+        Returns `404` when the parent contact isn''t visible to the caller or the key fact doesn''t exist on it.
+
+
+
+        **Required Scope:** `levitate:contacts`'
+      operationId: GetContactKeyFactById
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: keyFactId
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OperationResultOfKeyFact'
+        '401':
+          description: Unauthorized
+          content:
+            application/json: {}
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OperationResult'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OperationResult'
+    put:
+      tags:
+      - Contacts
+      summary: Replace one of a contact's key facts
+      description: '
+
+        ### Replaces a contact''s key fact in full, keeping its id. The body has the same requirements as create:
+
+        a `type` and at least a `value` or a `date`. Any field omitted from the body is cleared on the fact (this
+
+        is a full replace, not a partial update). An integration-owned (`readOnly`) fact cannot be modified.
+
+        Returns `404` when the parent contact isn''t visible to the caller or the key fact doesn''t exist on it.
+
+
+
+        **Required Scope:** `levitate:contacts`'
+      operationId: ReplaceContactKeyFact
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: keyFactId
+        in: path
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/KeyFactWrite'
+          application/*+json:
+            schema:
+              $ref: '#/components/schemas/KeyFactWrite'
+          application/json-patch+json:
+            schema:
+              $ref: '#/components/schemas/KeyFactWrite'
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OperationResultOfKeyFact'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OperationResult'
+        '401':
+          description: Unauthorized
+          content:
+            application/json: {}
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OperationResult'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OperationResult'
+    delete:
+      tags:
+      - Contacts
+      summary: Delete one of a contact's key facts
+      description: '
+
+        ### Removes a key fact from a contact.
+
+        An integration-owned (`readOnly`) fact cannot be deleted. Returns `404` when the parent contact isn''t
+
+        visible to the caller or the key fact doesn''t exist on it.
+
+
+
+        **Required Scope:** `levitate:contacts`'
+      operationId: DeleteContactKeyFact
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: keyFactId
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OperationResult'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OperationResult'
+        '401':
+          description: Unauthorized
+          content:
+            application/json: {}
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OperationResult'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OperationResult'
+components:
+  schemas:
+    Contact:
+      type: object
+      properties:
+        firstName:
+          type:
+          - 'null'
+          - string
+          description: Contact's first name
+        lastName:
+          type:
+          - 'null'
+          - string
+          description: Contact's last name
+        name:
+          type:
+          - 'null'
+          - string
+          description: Display name for the contact
+        jobTitle:
+          type:
+          - 'null'
+          - string
+          description: Contact's job title
+        website:
+          type:
+          - 'null'
+          - string
+          description: Url to the contact's website
+        bio:
+          type:
+          - 'null'
+          - string
+          description: A short biography or notes about the contact
+        tags:
+          type:
+          - 'null'
+          - array
+          items:
+            type: string
+          description: A list of values used to group and search contacts
+        emailAddresses:
+          type:
+          - 'null'
+          - array
+          items:
+            $ref: '#/components/schemas/EmailAddress'
+          description: Email addresses associated with the contact; the first entry is primary
+        phoneNumbers:
+          type:
+          - 'null'
+          - array
+          items:
+            $ref: '#/components/schemas/PhoneNumber'
+          description: Phone numbers associated with the contact; the first entry is primary
+        address:
+          allOf:
+          - $ref: '#/components/schemas/Address'
+          description: A physical or mailing address associated with the contact
+        customFields:
+          type:
+          - 'null'
+          - object
+          additionalProperties:
+            type: string
+          description: Account-defined custom fields as name/value pairs
+        source:
+          type:
+          - 'null'
+          - string
+          description: The origin of the contact record, eg. how it was created
+        company:
+          allOf:
+          - $ref: '#/components/schemas/Reference'
+          description: The company this contact is associated with
+        owner:
+          allOf:
+          - $ref: '#/components/schemas/Reference'
+          description: The user who owns this contact
+        visibility:
+          type:
+          - 'null'
+          - string
+          description: 'Visibility of the contact: ''shared'' (visible to the whole account) or ''private'''
+        emailSubscribed:
+          type: boolean
+          description: Whether the contact is subscribed to receive marketing emails
+        textSubscribed:
+          type: boolean
+          description: Whether the contact is subscribed to receive automated text messages
+        lastCommunicationDate:
+          type:
+          - 'null'
+          - string
+          description: Date/time of the most recent communication with this contact in ISO 8601 format
+          format: date-time
+        keyFacts:
+          type:
+          - 'null'
+          - array
+          items:
+            $ref: '#/components/schemas/KeyFact'
+          description: Key facts about the contact — notable dates and details. Read-only on the profile.
+        creationDate:
+          type:
+          - 'null'
+          - string
+          description: Date/time this was created in ISO 8601 format
+          format: date-time
+        lastModifiedDate:
+          type:
+          - 'null'
+          - string
+          description: Date/time this was last modified in ISO 8601 format
+          format: date-time
+        id:
+          type:
+          - 'null'
+          - string
+          description: Unique identifier generated by Levitate
+    PhoneNumber:
+      required:
+      - value
+      type: object
+      properties:
+        label:
+          type:
+          - 'null'
+          - string
+          description: The type of phone number, eg. Home, Mobile, etc.
+        value:
+          type:
+          - 'null'
+          - string
+          description: Unformatted value of the phone number
+        metadata:
+          allOf:
+          - $ref: '#/components/schemas/PhoneNumberMetadata'
+          description: Extra metadata and formatting options for the phone number
+        canSMS:
+          allOf:
+          - $ref: '#/components/schemas/Capability'
+          description: 'Can this phone number receive text messages: Unknown, Yes, No, Maybe, Opted out. Server-owned — learned from real send outcomes; any value sent on a write is ignored.'
+    KeyDateKind:
+      enum:
+      - Unknown
+      - Birthday
+      - Renewal
+      - Anniversary
+      - Wedding
+      - FinancialReview
+      - Custom1
+      - Custom2
+      - Custom3
+      - Custom4
+      - Custom5
+      - Custom6
+      - Custom7
+      - Custom8
+      - Custom9
+      - Custom10
+      - null
+    OperationResultOfContact:
+      type: object
+      properties:
+        success:
+          type: boolean
+        systemMessage:
+          type:
+          - 'null'
+          - string
+        systemCode:
+          pattern: ^-?(?:0|[1-9]\d*)$
+          type:
+          - integer
+          - string
+          format: int32
+        error:
+          $ref: '#/components/schemas/ITechnicalError'
+        requestId:
+          type:
+          - 'null'
+          - string
+        value:
+          $ref: '#/components/schemas/Contact'
+    ContactSearchRequest:
+      type: object
+      properties:
+        filter:
+          allOf:
+          - $ref: '#/components/schemas/ContactFilterNode'
+          description: The root of the boolean filter tree. A node is either a group ({op, filters}) or a condition ({field, operator, value}).
+      additionalProperties: false
+    Capability:
+      enum:
+      - 'Yes'
+      - 'No'
+      - Maybe
+      - OptOut
+      - Unknown
+    PagedCollectionOfContactSummary:
+      type: object
+      properties:
+        values:
+          type:
+          - 'null'
+          - array
+          items:
+            $ref: '#/components/schemas/ContactSummary'
+        pageToken:
+          type:
+          - 'null'
+          - string
+        totalCount:
+          pattern: ^-?(?:0|[1-9]\d*)$
+          type:
+          - integer
+          - string
+          format: int64
+        debug: {}
+    OperationResult:
+      type: object
+      properties:
+        success:
+          type: boolean
+        systemMessage:
+          type:
+          - 'null'
+          - string
+        systemCode:
+          pattern: ^-?(?:0|[1-9]\d*)$
+          type:
+          - integer
+          - string
+          format: int32
+        error:
+          $ref: '#/components/schemas/ITechnicalError'
+        requestId:
+          type:
+          - 'null'
+          - string
+    PagedCollectionOfKeyFact:
+      type: object
+      properties:
+        values:
+          type:
+          - 'null'
+          - array
+          items:
+            $ref: '#/components/schemas/KeyFact'
+        pageToken:
+          type:
+          - 'null'
+          - string
+        totalCount:
+          pattern: ^-?(?:0|[1-9]\d*)$
+          type:
+          - integer
+          - string
+          format: int64
+        debug: {}
+    OperationResultOfPagedCollectionOfContactSummary:
+      type: object
+      properties:
+        success:
+          type: boolean
+        systemMessage:
+          type:
+          - 'null'
+          - string
+        systemCode:
+          pattern: ^-?(?:0|[1-9]\d*)$
+          type:
+          - integer
+          - string
+          format: int32
+        error:
+          $ref: '#/components/schemas/ITechnicalError'
+        requestId:
+          type:
+          - 'null'
+          - string
+        value:
+          $ref: '#/components/schemas/PagedCollectionOfContactSummary'
+    KeyDate:
+      type: object
+      properties:
+        month:
+          pattern: ^-?(?:0|[1-9]\d*)$
+          type:
+          - integer
+          - string
+          description: The numerical month of the date (1-12)
+          format: int32
+        day:
+          pattern: ^-?(?:0|[1-9]\d*)$
+          type:
+          - integer
+          - string
+          description: The numerical day of the month
+          format: int32
+        year:
+          pattern: ^-?(?:0|[1-9]\d*)$
+          type:
+          - 'null'
+          - integer
+          - string
+          description: The year of the date, if known
+          format: int32
+    ContactPatch:
+      type: object
+      properties:
+        firstName:
+          maxLength: 100
+          type: string
+          description: Contact's first name
+        lastName:
+          maxLength: 100
+          type: string
+          description: Contact's last name
+        jobTitle:
+          maxLength: 200
+          type: string
+          description: Contact's job title
+        emailAddresses:
+          maxItems: 25
+          type: array
+          items:
+            $ref: '#/components/schemas/EmailAddress'
+          description: Email addresses associated with the contact; the first entry is primary. A provided array replaces the existing addresses. Each value is capped at 254 characters and each label at 50.
+        phoneNumbers:
+          maxItems: 25
+          type: array
+          items:
+            $ref: '#/components/schemas/PhoneNumber'
+          description: Phone numbers associated with the contact; the first entry is primary. A provided array replaces the existing numbers. Each value is capped at 50 characters and each label at 50.
+        address:
+          $ref: '#/components/schemas/Address'
+        website:
+          maxLength: 2048
+          type: string
+          description: Url to the contact's website
+        bio:
+          maxLength: 5000
+          type: string
+          description: A short biography or notes about the contact
+        tags:
+          maxItems: 50
+          type: array
+          items:
+            type: string
+          description: A list of values used to group and search contacts; new tags are created automatically. A provided array replaces the existing tags. Each tag name is capped at 100 characters.
+        customFields:
+          type: object
+          additionalProperties:
+            type: string
+          description: Account-defined custom fields as name/value pairs; a provided object replaces the existing custom fields
+        visibility:
+          type: string
+          description: 'Visibility of the contact: ''shared'' (visible to the whole account) or ''private'''
+      additionalProperties: false
+    ContactFilterNode:
+      type: object
+      properties:
+        op:
+          type:
+          - 'null'
+          - string
+          description: 'Group node: the boolean operator combining the child filters — ''and'', ''or'', or ''not''.'
+        filters:
+          type:
+          - 'null'
+          - array
+          items:
+            $ref: '#/components/schemas/ContactFilterNode'
+          description: 'Group node: the child filter nodes. ''and''/''or'' take one or more; ''not'' takes exactly one.'
+        field:
+          type:
+          - 'null'
+          - string
+          description: 'Condition node: the field to test (e.g. ''tags'', ''name'', ''createdAt'').'
+        operator:
+          type:
+          - 'null'
+          - string
+          description: 'Condition node: the operator to apply (e.g. ''contains'', ''equals'', ''before''). Valid operators depend on the field.'
+        value:
+          type:
+          - 'null'
+          - string
+          description: 'Condition node: the value to compare against, sent as a string.'
+      additionalProperties: false
+    OperationResultOfKeyFact:
+      type: object
+      properties:
+        success:
+          type: boolean
+        systemMessage:
+          type:
+          - 'null'
+          - string
+        systemCode:
+          pattern: ^-?(?:0|[1-9]\d*)$
+          type:
+          - integer
+          - string
+          format: int32
+        error:
+          $ref: '#/components/schemas/ITechnicalError'
+        requestId:
+          type:
+          - 'null'
+          - string
+        value:
+          $ref: '#/components/schemas/KeyFact'
+    PhoneNumberMetadata:
+      type: object
+      properties:
+        e164:
+          type:
+          - 'null'
+          - string
+          description: The international standard E.164 formatted string
+        standard:
+          type:
+          - 'null'
+          - string
+          description: A localized standard of formatting based on the country code, eg. (919) 555-3333
+        countryCode:
+          pattern: ^-?(?:0|[1-9]\d*)$
+          type:
+          - integer
+          - string
+          description: Country code for the phone number, eg. 1 for US based phone numbers
+          format: int32
+        extension:
+          type:
+          - 'null'
+          - string
+          description: An optional number that is an extension to be keyed after the main number to reach the phone
+    Reference:
+      type: object
+      properties:
+        name:
+          type:
+          - 'null'
+          - string
+          description: Display name of the referenced resource
+        id:
+          type:
+          - 'null'
+          - string
+          description: Unique identifier generated by Levitate
+    KeyFact:
+      type: object
+      properties:
+        type:
+          oneOf:
+          - type: 'null'
+          - description: The kind of information this key fact represents, eg birthday or renewal
+            $ref: '#/components/schemas/KeyDateKind'
+        value:
+          type:
+          - 'null'
+          - string
+          description: Display value for the key fact
+        date:
+          allOf:
+          - $ref: '#/components/schemas/KeyDate'
+          description: The date this key fact represents, eg the birth date for a birthday
+        source:
+          type:
+          - 'null'
+          - string
+          description: The origin of the key fact, eg the integration that supplied it. Read-only.
+        readOnly:
+          type: boolean
+          description: True when the key fact is owned by an integration and cannot be modified through the API
+        id:
+          type:
+          - 'null'
+          - string
+          description: Unique identifier generated by Levitate
+    Address:
+      type: object
+      properties:
+        address1:
+          type:
+          - 'null'
+          - string
+          description: Street Address - First Line
+        address2:
+          type:
+          - 'null'
+          - string
+          description: Street Address - Second Line
+        city:
+          type:
+          - 'null'
+          - string
+          description: City name
+        stateProvince:
+          type:
+          - 'null'
+          - string
+          description: State or Province - Code or full name allowed
+        postalCode:
+          type:
+          - 'null'
+          - string
+          description: Postal zip code
+        country:
+          type:
+          - 'null'
+          - string
+          description: Country of the address - Code or full name allowed
+    EmailAddress:
+      required:
+      - label
+      - value
+      type: object
+      properties:
+        label:
+          type:
+          - 'null'
+          - string
+          description: A label describing the type of email address, eg. Work, Personal, etc.
+        value:
+          type:
+          - 'null'
+          - string
+          description: The full email address.
+    ITechnicalError:
+      type: object
+      properties:
+        errorMessage:
+          type:
+          - 'null'
+          - string
+        timestamp:
+          type: string
+          format: date-time
+        source:
+          type:
+          - 'null'
+          - string
+        errorCode:
+          pattern: ^-?(?:0|[1-9]\d*)$
+          type:
+          - integer
+          - string
+          format: int64
+        category:
+          type:
+          - 'null'
+          - string
+    ContactSummary:
+      type: object
+      properties:
+        url:
+          type:
+          - 'null'
+          - string
+          description: Path to the contact's full profile
+        name:
+          type:
+          - 'null'
+          - string
+          description: Display name for the contact
+        firstName:
+          type:
+          - 'null'
+          - string
+          description: Contact's first name
+        lastName:
+          type:
+          - 'null'
+          - string
+          description: Contact's last name
+        primaryEmail:
+          type:
+          - 'null'
+          - string
+          description: The contact's primary (first) email address
+        primaryPhone:
+          type:
+          - 'null'
+          - string
+          description: The contact's primary (first) phone number
+        company:
+          allOf:
+          - $ref: '#/components/schemas/Reference'
+          description: The company this contact is associated with
+        jobTitle:
+          type:
+          - 'null'
+          - string
+          description: Contact's job title
+        tags:
+          type:
+          - 'null'
+          - array
+          items:
+            type: string
+          description: A list of values used to group and search contacts
+        lastCommunicationDate:
+          type:
+          - 'null'
+          - string
+          description: Date/time of the most recent communication with this contact in ISO 8601 format
+          format: date-time
+        creationDate:
+          type:
+          - 'null'
+          - string
+          description: Date/time this contact was created in ISO 8601 format
+          format: date-time
+        id:
+          type:
+          - 'null'
+          - string
+          description: Unique identifier generated by Levitate
+    OperationResultOfPagedCollectionOfKeyFact:
+      type: object
+      properties:
+        success:
+          type: boolean
+        systemMessage:
+          type:
+          - 'null'
+          - string
+        systemCode:
+          pattern: ^-?(?:0|[1-9]\d*)$
+          type:
+          - integer
+          - string
+          format: int32
+        error:
+          $ref: '#/components/schemas/ITechnicalError'
+        requestId:
+          type:
+          - 'null'
+          - string
+        value:
+          $ref: '#/components/schemas/PagedCollectionOfKeyFact'
+    KeyFactWrite:
+      type: object
+      properties:
+        type:
+          oneOf:
+          - type: 'null'
+          - description: The kind of information this key fact represents, eg birthday or renewal
+            $ref: '#/components/schemas/KeyDateKind'
+        value:
+          maxLength: 1000
+          minLength: 0
+          type:
+          - 'null'
+          - string
+          description: Display value for the key fact. Capped at 1000 characters. Synthesized from the date when omitted.
+        date:
+          allOf:
+          - $ref: '#/components/schemas/KeyDate'
+          description: The date this key fact represents. The year is optional (eg a birthday with an unknown year).
+      additionalProperties: false
+    ContactWrite:
+      type: object
+      properties:
+        firstName:
+          maxLength: 100
+          minLength: 0
+          type:
+          - 'null'
+          - string
+          description: Contact's first name
+        lastName:
+          maxLength: 100
+          minLength: 0
+          type:
+          - 'null'
+          - string
+          description: Contact's last name
+        jobTitle:
+          maxLength: 200
+          minLength: 0
+          type:
+          - 'null'
+          - string
+          description: Contact's job title
+        emailAddresses:
+          maxItems: 25
+          type:
+          - 'null'
+          - array
+          items:
+            $ref: '#/components/schemas/EmailAddress'
+          description: Email addresses associated with the contact; the first entry is primary. Each value is capped at 254 characters and each label at 50.
+        phoneNumbers:
+          maxItems: 25
+          type:
+          - 'null'
+          - array
+          items:
+            $ref: '#/components/schemas/PhoneNumber'
+          description: Phone numbers associated with the contact; the first entry is primary. Each value is capped at 50 characters and each label at 50.
+        address:
+          allOf:
+          - $ref: '#/components/schemas/Address'
+          description: A physical or mailing address associated with the contact. Address lines are capped at 200 characters; city, state/province, and country at 100; postal code at 20.
+        website:
+          maxLength: 2048
+          minLength: 0
+          type:
+          - 'null'
+          - string
+          description: Url to the contact's website
+        bio:
+          maxLength: 5000
+          minLength: 0
+          type:
+          - 'null'
+          - string
+          description: A short biography or notes about the contact
+        tags:
+          maxItems: 50
+          type:
+          - 'null'
+          - array
+          items:
+            type: string
+          description: A list of values used to group and search contacts; new tags are created automatically. Each tag name is capped at 100 characters.
+        customFields:
+          type:
+          - 'null'
+          - object
+          additionalProperties:
+            type: string
+          description: Account-defined custom fields as name/value pairs
+        visibility:
+          type:
+          - 'null'
+          - string
+          description: 'Visibility of the contact: ''shared'' (visible to the whole account) or ''private'''
+      additionalProperties: false
+  securitySchemes:
+    OAuth2:
+      type: oauth2
+      description: Levitate OAuth2 Authorization Flow
+      flows:
+        authorizationCode:
+          authorizationUrl: https://login.levitate.ai/oauth2/authorize
+          tokenUrl: https://login.levitate.ai/oauth2/token
+          scopes:
+            levitate:contacts: Access Levitate contacts and related operations
+            levitate:campaigns: Access Levitate campaigns and related operations
