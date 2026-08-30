@@ -33,18 +33,18 @@ specificationVersion: '0.23'
 created: '2026-08-25'
 modified: '2026-08-25'
 tags:
-  - Relationship Marketing
+  - relationship-marketing
   - CRM
-  - Email Marketing
+  - email-marketing
   - Contacts
-  - Small Business
+  - small-business
   - Insurance
-  - Financial Services
-  - Nonprofit
-  - Marketing Automation
+  - Financial-Services
+  - nonprofit
+  - marketing-automation
   - MCP
   - agent-native
-  - SaaS
+  - saas
 tags_raw:
   - relationship-marketing
   - crm
