@@ -105,3 +105,20 @@ divergence_from_rest:
 provider_guidance:
 - Do not connect the MCP server from a free tier of any AI assistant — Levitate accounts may hold sensitive
   client information.
+rfc9728:
+  endpoint: https://mcp.levitate.ai/mcp
+  metadata_url: https://mcp.levitate.ai/.well-known/oauth-protected-resource/mcp
+  discovered_via: WWW-Authenticate resource_metadata on an anonymous POST initialize
+  fetched: '2026-09-25'
+  http_status: 200
+  content_type: application/json
+  document:
+    resource: https://mcp.levitate.ai/mcp
+    authorization_servers:
+    - https://login.levitate.ai
+    scopes_supported:
+    - openid
+    - profile
+    - email
+    bearer_methods_supported:
+    - header

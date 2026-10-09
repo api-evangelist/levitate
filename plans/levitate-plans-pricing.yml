@@ -91,3 +91,46 @@ quotas_published:
   - name: AI Email Campaigns
     value: monthly allowance per account, amount not published
     source: https://help.levitate.ai/article/737-august-2026-releases
+x-canonical:
+  generated: '2026-10-08'
+  vocabulary: all/0-working/economics/plans-canonical.yml
+  models:
+  - negotiated
+  units: []
+  plans:
+  - name: Levitate Essential
+    access: other
+    model: unstated
+    model_how: derived
+    units: []
+    periods: []
+  - name: Levitate Preferred
+    access: other
+    model: unstated
+    model_how: derived
+    units: []
+    periods: []
+  - name: Levitate Prestige
+    access: other
+    model: unstated
+    model_how: derived
+    units: []
+    periods: []
+  - name: Website Essential
+    access: other
+    model: negotiated
+    model_how: derived
+    units: []
+    periods: []
+  - name: Website Preferred
+    access: other
+    model: negotiated
+    model_how: derived
+    units: []
+    periods: []
+  - name: Website Prestige
+    access: other
+    model: negotiated
+    model_how: derived
+    units: []
+    periods: []
