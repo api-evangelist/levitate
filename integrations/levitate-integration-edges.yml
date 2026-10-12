@@ -1,0 +1,419 @@
+generated: '2026-10-12'
+method: searched
+source:
+- https://zapier.com/apps/levitate/integrations
+checked:
+- https://composio.dev/toolkits/levitate
+- https://monid.ai/tools/levitate
+- https://n8n.io/integrations/levitate/
+- https://zapier.com/apps/levitate/integrations
+summary: null
+marketplace_apps:
+- marketplace: zapier
+  channel: ipaas-listing
+  app: levitate
+  url: https://zapier.com/apps/levitate/integrations
+  external_url: https://levitate.ai/
+  partner_tier: SILVER
+  triggers: []
+  actions:
+  - key: create_contact
+    label: Create or Update Levitate Contact
+  - key: create_donation
+    label: Create a Donation
+  - key: create_policy
+    label: Create/Update a Policy
+  searches: []
+edges:
+- partner_name: Housecall Pro
+  partner: housecall-pro
+  partner_match: domain
+  partner_candidate: null
+  type: marketplace
+  marketplace: zapier
+  channel: ipaas-usage
+  evidence: https://zapier.com/apps/levitate/integrations/housecall-pro
+  direction: third-party
+  category: Scheduling & Booking
+  partner_url: https://www.housecallpro.com/
+- partner_name: Bloomerang
+  partner: bloomerang
+  partner_match: name-exact
+  partner_candidate: null
+  type: marketplace
+  marketplace: zapier
+  channel: ipaas-usage
+  evidence: https://zapier.com/apps/levitate/integrations/bloomerang
+  direction: third-party
+  category: Fundraising
+  partner_url: https://bloomerang.co/
+- partner_name: AgencyBloc
+  partner: null
+  partner_match: null
+  partner_candidate: null
+  type: marketplace
+  marketplace: zapier
+  channel: ipaas-usage
+  evidence: https://zapier.com/apps/levitate/integrations/agencybloc
+  direction: third-party
+  category: Sales & CRM
+  partner_url: https://www.agencybloc.com/
+- partner_name: Squarespace Forms
+  partner: squarespace
+  partner_match: domain
+  partner_candidate: null
+  type: marketplace
+  marketplace: zapier
+  channel: ipaas-usage
+  evidence: https://zapier.com/apps/levitate/integrations/squarespace-forms
+  direction: third-party
+  category: Forms & Surveys
+  partner_url: https://www.squarespace.com/
+- partner_name: Wealthbox CRM
+  partner: wealthbox
+  partner_match: domain
+  partner_candidate: null
+  type: marketplace
+  marketplace: zapier
+  channel: ipaas-usage
+  evidence: https://zapier.com/apps/levitate/integrations/wealthbox
+  direction: third-party
+  category: CRM (Customer Relationship Management)
+  partner_url: https://www.wealthbox.com/
+- partner_name: Givebutter
+  partner: givebutter
+  partner_match: domain
+  partner_candidate: null
+  type: marketplace
+  marketplace: zapier
+  channel: ipaas-usage
+  evidence: https://zapier.com/apps/levitate/integrations/givebutter
+  direction: third-party
+  category: Fundraising
+  partner_url: https://givebutter.com/
+- partner_name: Facebook Lead Ads
+  partner: facebook-lead-ads
+  partner_match: name-exact
+  partner_candidate: null
+  type: marketplace
+  marketplace: zapier
+  channel: ipaas-usage
+  evidence: https://zapier.com/apps/levitate/integrations/facebook-lead-ads
+  direction: third-party
+  category: Ads & Conversion
+  partner_url: https://www.facebook.com/business/ads/lead-ads
+- partner_name: PayPal
+  partner: paypal
+  partner_match: domain
+  partner_candidate: null
+  type: marketplace
+  marketplace: zapier
+  channel: ipaas-usage
+  evidence: https://zapier.com/apps/levitate/integrations/paypal
+  direction: third-party
+  category: Payment Processing
+  partner_url: https://www.paypal.com/
+- partner_name: Stripe
+  partner: stripe
+  partner_match: domain
+  partner_candidate: null
+  type: marketplace
+  marketplace: zapier
+  channel: ipaas-usage
+  evidence: https://zapier.com/apps/levitate/integrations/stripe
+  direction: third-party
+  category: Payment Processing
+  partner_url: https://stripe.com/
+- partner_name: Gravity Forms
+  partner: gravity-forms
+  partner_match: domain
+  partner_candidate: null
+  type: marketplace
+  marketplace: zapier
+  channel: ipaas-usage
+  evidence: https://zapier.com/apps/levitate/integrations/gravity-forms
+  direction: third-party
+  category: Forms & Surveys
+  partner_url: https://www.gravityforms.com/?utm_campaign=partners&utm_source=zapier-listing-learn-more&utm_medium=free-placement
+- partner_name: WebinarKit
+  partner: null
+  partner_match: null
+  partner_candidate: null
+  type: marketplace
+  marketplace: zapier
+  channel: ipaas-usage
+  evidence: https://zapier.com/apps/levitate/integrations/webinarkit
+  direction: third-party
+  category: Marketing
+  partner_url: https://webinarkit.com/
+- partner_name: Microsoft Outlook
+  partner: microsoft-outlook
+  partner_match: name-exact
+  partner_candidate: null
+  type: marketplace
+  marketplace: zapier
+  channel: ipaas-usage
+  evidence: https://zapier.com/apps/levitate/integrations/microsoft-outlook
+  direction: third-party
+  category: Calendar
+  partner_url: https://outlook.live.com/
+- partner_name: Give Lively
+  partner: null
+  partner_match: null
+  partner_candidate: zapier
+  type: marketplace
+  marketplace: zapier
+  channel: ipaas-usage
+  evidence: https://zapier.com/apps/levitate/integrations/give-lively
+  direction: third-party
+  category: Accounting
+  partner_url: https://zapier.com/givelively.org
+- partner_name: Google Forms
+  partner: google-forms
+  partner_match: name-exact
+  partner_candidate: null
+  type: marketplace
+  marketplace: zapier
+  channel: ipaas-usage
+  evidence: https://zapier.com/apps/levitate/integrations/google-forms
+  direction: third-party
+  category: Forms & Surveys
+  partner_url: http://google.com/
+- partner_name: Webflow
+  partner: webflow
+  partner_match: name-exact
+  partner_candidate: null
+  type: marketplace
+  marketplace: zapier
+  channel: ipaas-usage
+  evidence: https://zapier.com/apps/levitate/integrations/webflow
+  direction: third-party
+  category: Website Builders
+  partner_url: https://webflow.com/
+- partner_name: Constant Contact
+  partner: constant-contact
+  partner_match: domain
+  partner_candidate: null
+  type: marketplace
+  marketplace: zapier
+  channel: ipaas-usage
+  evidence: https://zapier.com/apps/levitate/integrations/constant-contact
+  direction: third-party
+  category: Email Newsletters
+  partner_url: http://www.constantcontact.com/signup.jsp?pn=zapier
+- partner_name: Lawmatics
+  partner: lawmatics
+  partner_match: domain
+  partner_candidate: null
+  type: marketplace
+  marketplace: zapier
+  channel: ipaas-usage
+  evidence: https://zapier.com/apps/levitate/integrations/lawmatics
+  direction: third-party
+  category: CRM (Customer Relationship Management)
+  partner_url: https://www.lawmatics.com/demo
+- partner_name: Demio
+  partner: demio
+  partner_match: domain
+  partner_candidate: null
+  type: marketplace
+  marketplace: zapier
+  channel: ipaas-usage
+  evidence: https://zapier.com/apps/levitate/integrations/demio
+  direction: third-party
+  category: Webinars
+  partner_url: https://demio.com/
+- partner_name: Google Sheets
+  partner: google-sheets
+  partner_match: name-exact
+  partner_candidate: null
+  type: marketplace
+  marketplace: zapier
+  channel: ipaas-usage
+  evidence: https://zapier.com/apps/levitate/integrations/google-sheets
+  direction: third-party
+  category: Google
+  partner_url: http://sheets.google.com/
+- partner_name: HubSpot
+  partner: hubspot
+  partner_match: domain
+  partner_candidate: null
+  type: marketplace
+  marketplace: zapier
+  channel: ipaas-usage
+  evidence: https://zapier.com/apps/levitate/integrations/hubspot
+  direction: third-party
+  category: Marketing Automation
+  partner_url: http://www.hubspot.com/
+- partner_name: Square
+  partner: square
+  partner_match: domain
+  partner_candidate: null
+  type: marketplace
+  marketplace: zapier
+  channel: ipaas-usage
+  evidence: https://zapier.com/apps/levitate/integrations/square
+  direction: third-party
+  category: eCommerce
+  partner_url: https://squareup.com/t/cmtp_performance/pr_developers/d_partnerships/p_zapier/?route=
+- partner_name: AgencyZoom
+  partner: agencyzoom
+  partner_match: domain
+  partner_candidate: null
+  type: marketplace
+  marketplace: zapier
+  channel: ipaas-usage
+  evidence: https://zapier.com/apps/levitate/integrations/agencyzoom-ca67272
+  direction: third-party
+  category: CRM (Customer Relationship Management)
+  partner_url: http://www.agencyzoom.com/
+- partner_name: monday.com
+  partner: null
+  partner_match: null
+  partner_candidate: null
+  type: marketplace
+  marketplace: zapier
+  channel: ipaas-usage
+  evidence: https://zapier.com/apps/levitate/integrations/monday
+  direction: third-party
+  category: Project Management
+  partner_url: https://monday.com/
+- partner_name: ClickFunnels
+  partner: clickfunnels
+  partner_match: name-exact
+  partner_candidate: null
+  type: marketplace
+  marketplace: zapier
+  channel: ipaas-usage
+  evidence: https://zapier.com/apps/levitate/integrations/clickfunnels
+  direction: third-party
+  category: Website & App Building
+  partner_url: https://help.myclickfunnels.com/hc/en-us/articles/9655675588119-ClickFunnels-FAQs
+- partner_name: Smokeball
+  partner: smokeball
+  partner_match: domain
+  partner_candidate: null
+  type: marketplace
+  marketplace: zapier
+  channel: ipaas-usage
+  evidence: https://zapier.com/apps/levitate/integrations/smokeball-1
+  direction: third-party
+  category: Productivity
+  partner_url: https://www.smokeball.com/
+- partner_name: Roofr
+  partner: roofr
+  partner_match: domain
+  partner_candidate: null
+  type: marketplace
+  marketplace: zapier
+  channel: ipaas-usage
+  evidence: https://zapier.com/apps/levitate/integrations/roofr
+  direction: third-party
+  category: Sales & CRM
+  partner_url: https://roofr.com/
+- partner_name: Little Green Light
+  partner: null
+  partner_match: null
+  partner_candidate: null
+  type: marketplace
+  marketplace: zapier
+  channel: ipaas-usage
+  evidence: https://zapier.com/apps/levitate/integrations/little-green-light
+  direction: third-party
+  category: CRM (Customer Relationship Management)
+  partner_url: http://www.littlegreenlight.com/
+- partner_name: Canopy Connect
+  partner: canopy
+  partner_match: domain
+  partner_candidate: null
+  type: marketplace
+  marketplace: zapier
+  channel: ipaas-usage
+  evidence: https://zapier.com/apps/levitate/integrations/canopy-connect
+  direction: third-party
+  category: Website & App Building
+  partner_url: https://usecanopy.com/
+- partner_name: BetterUnite
+  partner: null
+  partner_match: null
+  partner_candidate: null
+  type: marketplace
+  marketplace: zapier
+  channel: ipaas-usage
+  evidence: https://zapier.com/apps/levitate/integrations/betterunite
+  direction: third-party
+  category: Event Management
+  partner_url: https://betterunite.com/
+- partner_name: Dubsado
+  partner: null
+  partner_match: null
+  partner_candidate: null
+  type: marketplace
+  marketplace: zapier
+  channel: ipaas-usage
+  evidence: https://zapier.com/apps/levitate/integrations/dubsado
+  direction: third-party
+  category: CRM (Customer Relationship Management)
+  partner_url: https://www.dubsado.com/
+templates:
+- title: Create or update Levitate contacts from new or updated Bloomerang constituents
+  url: https://zapier.com/apps/bloomerang/integrations/levitate/1685974/create-or-update-levitate-contacts-from-new-or-updated-bloomerang-constituents
+  apps:
+  - bloomerang
+  - levitate
+- title: Add new AgencyBloc individuals as Levitate contacts
+  url: https://zapier.com/apps/agencybloc/integrations/levitate/1685984/add-new-agencybloc-individuals-as-levitate-contacts
+  apps:
+  - agencybloc
+  - levitate
+- title: Add new Stripe payments in Levitate as donations
+  url: https://zapier.com/apps/levitate/integrations/stripe/1823685/add-new-stripe-payments-in-levitate-as-donations
+  apps:
+  - stripe
+  - levitate
+- title: Create or update Levitate contacts when new AgencyBloc individuals are updated
+  url: https://zapier.com/apps/agencybloc/integrations/levitate/1819186/create-or-update-levitate-contacts-when-new-agencybloc-individuals-are-updated
+  apps:
+  - agencybloc
+  - levitate
+- title: Add contacts in Levitate for new scheduled jobs Housecall Pro
+  url: https://zapier.com/apps/housecall-pro/integrations/levitate/1823712/add-contacts-in-levitate-for-new-scheduled-jobs-housecall-pro
+  apps:
+  - housecall-pro
+  - levitate
+- title: Add new Bloomerang transaction payments in Levitate as donations
+  url: https://zapier.com/apps/bloomerang/integrations/levitate/1823688/add-new-bloomerang-transaction-payments-in-levitate-as-donations
+  apps:
+  - bloomerang
+  - levitate
+- title: Add new AgencyBloc policies to Levitate
+  url: https://zapier.com/apps/agencybloc/integrations/levitate/255584319/add-new-agencybloc-policies-to-levitate
+  apps:
+  - agencybloc
+  - levitate
+- title: Create or update Levitate policies from new or updated AgencyBloc policies
+  url: https://zapier.com/apps/agencybloc/integrations/levitate/255584325/create-or-update-levitate-policies-from-new-or-updated-agencybloc-policies
+  apps:
+  - agencybloc
+  - levitate
+- title: Add new Give Lively donations to Levitate
+  url: https://zapier.com/apps/give-lively/integrations/levitate/1809463/add-new-give-lively-donations-to-levitate
+  apps:
+  - give-lively
+  - levitate
+- title: Add new successful PayPal sales as Levitate donations
+  url: https://zapier.com/apps/levitate/integrations/paypal/1823678/add-new-successful-paypal-sales-as-levitate-donations
+  apps:
+  - paypal
+  - levitate
+- title: Create a donation in Levitate for each new transaction in Givebutter
+  url: https://zapier.com/apps/givebutter/integrations/levitate/255630341/create-a-donation-in-levitate-for-each-new-transaction-in-givebutter
+  apps:
+  - givebutter
+  - levitate
+- title: Create or update Levitate contacts with new transactions from Givebutter
+  url: https://zapier.com/apps/givebutter/integrations/levitate/255653620/create-or-update-levitate-contacts-with-new-transactions-from-givebutter
+  apps:
+  - givebutter
+  - levitate
+template_total: 68
