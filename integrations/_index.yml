@@ -347,7 +347,6 @@
   arazzo: null
 - slug: levitate-monday-com
   label: monday.com
-  partner: monday-com
   partner_name: monday.com
   category: Project Management
   type: marketplace
@@ -355,7 +354,7 @@
   channel: ipaas-usage
   evidence: https://zapier.com/apps/levitate/integrations/monday
   source: edge
-  status: pending-generation
+  status: pending-partner-spec
   arazzo: null
 - slug: levitate-clickfunnels
   label: ClickFunnels
@@ -437,4 +436,17 @@
   evidence: https://zapier.com/apps/levitate/integrations/dubsado
   source: edge
   status: pending-partner-spec
+  arazzo: null
+- slug: levitate-vertafore-own
+  label: Vertafore (own)
+  partner: vertafore
+  partner_name: Vertafore (own)
+  category: Integration Partners
+  type: marketplace
+  marketplace: own
+  channel: partner-built
+  evidence: https://www.vertafore.com/orange-partner-program/levitate
+  source: edge
+  relationship: platform-app
+  status: not-a-workflow
   arazzo: null
