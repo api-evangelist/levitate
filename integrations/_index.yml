@@ -437,6 +437,19 @@
   source: edge
   status: pending-partner-spec
   arazzo: null
+- slug: levitate-servicetitan-own
+  label: ServiceTitan (own)
+  partner: servicetitan
+  partner_name: ServiceTitan (own)
+  category: Marketing
+  type: marketplace
+  marketplace: own
+  channel: partner-built
+  evidence: https://marketplace.servicetitan.com/partner/levitate
+  source: edge
+  relationship: platform-app
+  status: not-a-workflow
+  arazzo: null
 - slug: levitate-vertafore-own
   label: Vertafore (own)
   partner: vertafore
