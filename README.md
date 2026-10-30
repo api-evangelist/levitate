@@ -64,5 +64,132 @@
 > Full detail: **[Where this data comes from](https://apievangelist.com/about/where-our-data-comes-from)**
 <!-- API-EVANGELIST-PROVENANCE:END -->
 
-Levitate is a company surfaced via the API Evangelist harvest backlog (source: secondary-market) and added to the network as a stub for full-pipeline profiling.
-- https://forgeglobal.com/levitate_stock/
+Levitate is a relationship-marketing and "Happiness Platform" SaaS for relationship-based small businesses — insurance agencies, financial advisors, law firms, nonprofits, home services and faith organizations — founded in 2017 in Raleigh, North Carolina by ShareFile founder Jesse Lipson. The product combines AI-assisted personal email at scale, text messaging, social posting, surveys and event registration, review generation, meeting booking, handwritten cards, donation and opportunity boards, and website publishing, all built around a contact record that stores "key facts" (birthdays, anniversaries, hobbies) used to drive timely, personalized outreach. Levitate exposes two developer surfaces: a REST Public API (OpenAPI 3.1.1) over Contacts, Key Facts, Companies and Notes at api.levitate.ai/public/v1, authenticated with Personal API Keys or OAuth 2.0 authorization-code + PKCE bearer tokens; and a hosted, OAuth-protected remote MCP server at mcp.levitate.ai/mcp that gives AI assistants natural-language access to contacts, action items, donations, campaigns, opportunities, policies, notes and connected-integration data.
+
+**Areas:** relationship-marketing · CRM · Email Marketing · Contacts · Small Business · Insurance · Financial Services · Non-Profit · Marketing Automation · MCP · Agent-Native · Software-as-a-Service
+
+## Levitate on APIs.io
+
+Everything profiled for Levitate is published on APIs.io rather than in this repository. Start at the provider page — **[apis.io/providers/levitate/](https://apis.io/providers/levitate/)** — or go straight to one of the APIs or properties below.
+
+### APIs (4)
+
+- [Levitate MCP Server](https://apis.io/apis/levitate/levitate-mcp-server/) — Hosted remote MCP server (streamable HTTP) that connects Levitate to AI assistants — Claude Desktop, Claude Code, ChatGPT, Cursor, VS Code Copilot, Windsurf…
+- [Levitate Companies API](https://apis.io/apis/levitate/levitate-companies-api/) — The Companies API from Levitate — 2 operation(s) for companies.
+- [Levitate Contacts API](https://apis.io/apis/levitate/levitate-contacts-api/) — The Contacts API from Levitate — 5 operation(s) for contacts.
+- [Levitate Notes API](https://apis.io/apis/levitate/levitate-notes-api/) — The Notes API from Levitate — 2 operation(s) for notes.
+
+### Published properties
+
+Each property below is a page on APIs.io carrying the machine-readable artifact and what it says.
+
+#### MCP servers (1)
+
+Model Context Protocol servers that expose the API to agents.
+
+- [Levitate MCP Server](https://apis.io/servers/levitate/levitate-mcp-server/)
+
+#### Overlays (1)
+
+OpenAPI overlays, including conversational phrasing for each operation.
+
+- [Levitate Public V1 Overlay](https://apis.io/overlays/levitate/levitate-public-v1-overlay/)
+
+#### Security (4)
+
+Authentication, trust centre, and vulnerability disclosure.
+
+- [Levitate Authentication](https://apis.io/security/levitate/levitate-authentication/)
+- [Levitate Domain Security](https://apis.io/security/levitate/levitate-domain-security/)
+- [Levitate Trust Center](https://apis.io/security/levitate/levitate-trust-center/)
+- [Levitate Vulnerability Disclosure](https://apis.io/security/levitate/levitate-vulnerability-disclosure/)
+
+#### OAuth scopes (1)
+
+The permissions the API asks for.
+
+- [Levitate Scopes](https://apis.io/scopes/levitate/levitate-scopes/)
+
+#### Plans and pricing (1)
+
+Published plans, tiers and prices.
+
+- [Levitate Plans Pricing](https://apis.io/plans/levitate/levitate-plans-pricing/)
+
+#### Rate limits (1)
+
+Published request limits.
+
+- [Levitate Rate Limits](https://apis.io/rate-limits/levitate/levitate-rate-limits/)
+
+## Where to find this API
+
+Links to the company's own pages. This repository publishes no copy of their specifications — the canonical document is theirs and lives at the URLs below.
+
+- [Website](https://www.levitate.ai/)
+- [Documentation](https://help.levitate.ai/article/735-levitate-public-api)
+- [Getting started](https://help.levitate.ai/article/322-api-keys)
+- [API reference](https://api.levitate.ai/docs/)
+- [Pricing](https://www.levitate.ai/pricing)
+- [Support](https://help.levitate.ai/)
+- [Changelog](https://help.levitate.ai/category/108-latest-releases)
+- [Blog](https://www.levitate.ai/blog)
+- [Trust centre](https://trust.levitate.ai)
+- [Terms of service](https://www.levitate.ai/terms-of-service)
+- [Privacy policy](https://www.levitate.ai/privacy-policy)
+- [Status](https://status.levitate.ai)
+
+## API Evangelist rating
+
+**Kin Score 57.1** — strong · rubric 0.25.0 · scored 2026-10-23
+
+| Facet | Score |
+|---|---|
+| Discoverability | 68.3 |
+| Contract quality | 51.6 |
+| Contract governance | 18.2 |
+| Operational transparency | 34.2 |
+| Developer ergonomics | 49.4 |
+| Access clarity | 85.5 |
+
+**Agent readiness 46.3** — agent-ready (gated down from agent-native)
+
+| Agent-readiness dimension | Result |
+|---|---|
+| Spec Presence | yes |
+| Agentic Access | — |
+| Reversibility Documented | — |
+| MCP Server | verified |
+| Auth Clarity | served (partial credit) |
+| Idempotency | — |
+| Error Semantics | verified |
+| OpenAPI Examples | — |
+| Rate Limit Signal | documented (partial credit) |
+| Event Surface Described | — |
+| Agent Skills | derived (partial credit) |
+| Well Known Catalog | — |
+| Consent Identity | — |
+| Agent Card | — |
+| Dry Run Mode | — |
+| Delegated Identity | served (partial credit) |
+| Protected Resource Metadata | verified |
+| Dynamic Client Registration | — |
+| Agentic Commerce | — |
+| Pagination Ratio | na |
+| Operation Distinctiveness | distinct |
+
+**Regulatory alignment 46.5** — Insurance
+
+The rubric is published at [github.com/api-evangelist/kin-score](https://github.com/api-evangelist/kin-score). The per-check breakdown behind these numbers — which checks were earned, partial or missed — along with score history and how this provider compares to its peers, is available at [apis.io/providers/levitate/](https://apis.io/providers/levitate/).
+
+## How this profile is made
+
+API Evangelist profiles a company's public API surface the way a developer would find it: the website, developer portal and documentation, the specifications it publishes, its public repositories, and its pricing, status and changelog pages. From that it derives the properties above — contracts split per API, workflows, schemas, collections, governance rules, plans and rate limits — and scores them against the published [Kin Score rubric](https://github.com/api-evangelist/kin-score).
+
+The artifacts are published on [APIs.io](https://apis.io), not in this repository. This repository is the public record for Levitate: the place to say something is wrong, missing or out of date, and to ask for a re-score or a removal.
+
+## Open an issue
+
+- **Something about this listing** — a wrong description, a missing API, a stale artifact or a question about the rating: [open an issue on this repository](https://github.com/api-evangelist/levitate/issues/new).
+- **A new API, or one that is not in the catalog yet** — [submit it on APIs.io](https://apis.io/add/).
+- **Anything else** — [the APIs.io inbox](https://github.com/api-search/inbox/issues/new) or [info@apievangelist.com](mailto:info@apievangelist.com).
